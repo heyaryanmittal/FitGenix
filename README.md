@@ -44,7 +44,7 @@ FitGenix is a state-of-the-art MERN stack application designed to be your defini
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/FitGenix.git
+git clone https://github.com/heyaryanmittal/FitGenix.git
 cd FitGenix
 
 # Install Dependencies
