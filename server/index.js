@@ -22,10 +22,14 @@ const connectDB = async () => {
         if (!process.env.MONGO_URI) {
             throw new Error("MONGO_URI is missing from environment variables!");
         }
-        await mongoose.connect(process.env.MONGO_URI);
+        await mongoose.connect(process.env.MONGO_URI, {
+            serverSelectionTimeoutMS: 15000,
+            socketTimeoutMS: 45000,
+        });
         isConnected = true;
         console.log('MongoDB connected');
     } catch (err) {
+        isConnected = false;
         console.error('MongoDB connection error:', err.message);
     }
 };
@@ -36,6 +40,16 @@ connectDB();
 app.use(async (req, res, next) => {
     await connectDB();
     next();
+});
+
+// Debug endpoint to check env + DB status
+app.get('/api/debug-mongo', (req, res) => {
+    res.json({
+        mongoUriPresent: !!process.env.MONGO_URI,
+        mongoUriStart: process.env.MONGO_URI ? process.env.MONGO_URI.substring(0, 25) + '...' : 'NOT SET',
+        isConnected,
+        mongooseState: mongoose.connection.readyState, // 0=disconnected, 1=connected, 2=connecting
+    });
 });
 
 app.get('/', (req, res) => {
