@@ -15,11 +15,28 @@ const SECRET_KEY = process.env.JWT_SECRET || "supersecretkey123";
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log('MongoDB connected'))
-    .catch(err => {
-        console.error('MongoDB connection error:', err);
-    });
+let isConnected = false;
+const connectDB = async () => {
+    if (isConnected) return;
+    try {
+        if (!process.env.MONGO_URI) {
+            throw new Error("MONGO_URI is missing from environment variables!");
+        }
+        await mongoose.connect(process.env.MONGO_URI);
+        isConnected = true;
+        console.log('MongoDB connected');
+    } catch (err) {
+        console.error('MongoDB connection error:', err.message);
+    }
+};
+
+// Connect at startup
+connectDB();
+
+app.use(async (req, res, next) => {
+    await connectDB();
+    next();
+});
 
 app.get('/', (req, res) => {
     res.send('FitGenix API is running');
