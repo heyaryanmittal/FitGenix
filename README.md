@@ -69,11 +69,9 @@ GROQ_API_KEY=your_groq_api_key
 JWT_SECRET=your_jwt_signing_secret_key
 ```
 
-Create a `.env.local` file in the `client` directory:
-
 ```bash
-# client/.env.local
-VITE_API_URL=http://localhost:5000
+# client/.env
+VITE_API_URL=Backend URL
 ```
 
 ### 4. Running Locally
