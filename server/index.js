@@ -57,6 +57,16 @@ const userSchema = new mongoose.Schema({
         calories: { type: Number, default: 2500 },
         protein: { type: Number, default: 150 },
         carbs: { type: Number, default: 250 }
+    },
+    mealPlan: {
+        type: Map,
+        of: new mongoose.Schema({
+            breakfast: [{ name: String, calories: Number, protein: String, carbs: String, fats: String, notes: String }],
+            lunch: [{ name: String, calories: Number, protein: String, carbs: String, fats: String, notes: String }],
+            dinner: [{ name: String, calories: Number, protein: String, carbs: String, fats: String, notes: String }],
+            snacks: [{ name: String, calories: Number, protein: String, carbs: String, fats: String, notes: String }]
+        }, { _id: false }),
+        default: {}
     }
 });
 
@@ -179,7 +189,7 @@ app.get('/api/dashboard', authenticateToken, async (req, res) => {
             await user.save();
         }
 
-        res.json({ user, todayLog: targetLog });
+        res.json({ success: true, data: { user, todayLog: targetLog } });
     } catch (err) {
         res.status(500).json({ error: "Failed to fetch dashboard" });
     }
@@ -478,6 +488,239 @@ app.post('/api/diet', async (req, res) => {
     }
 });
 
+
+// ─── Meal Planner Routes ────────────────────────────────────────────────────
+
+// GET current meal plan
+app.get('/api/meal-plan', authenticateToken, async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id).lean(); // .lean() returns plain JS objects, not Mongoose docs
+        // mealPlan is stored as a Map — convert to plain object
+        let plan = {};
+        if (user.mealPlan) {
+            // With .lean(), Map becomes a plain object already; just force serialize to strip any leftover doc artifacts
+            plan = JSON.parse(JSON.stringify(user.mealPlan));
+        }
+        res.json({ success: true, mealPlan: plan });
+    } catch (err) {
+        console.error('Get Meal Plan Error:', err);
+        res.status(500).json({ error: 'Failed to fetch meal plan' });
+    }
+});
+
+// SAVE / overwrite full meal plan
+app.post('/api/meal-plan/save', authenticateToken, async (req, res) => {
+    try {
+        const { mealPlan } = req.body;
+        const user = await User.findById(req.user.id);
+
+        // Mongoose Map needs .set() or direct assignment + markModified
+        user.mealPlan = mealPlan;
+        user.markModified('mealPlan');
+
+        // Find today's plan and sync it to todayLog
+        const todayName = new Date().toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+        const todayPlan = mealPlan[todayName];
+
+        if (todayPlan) {
+            const todayStr = new Date().toISOString().split('T')[0];
+            let logIndex = user.dailyLogs.findIndex(log => {
+                const d = new Date(log.date);
+                return !isNaN(d) && d.toISOString().split('T')[0] === todayStr;
+            });
+
+            if (logIndex === -1) {
+                user.dailyLogs.push({ date: new Date(), exercises: [], nutrition: { breakfast: [], lunch: [], snacks: [], dinner: [] } });
+                logIndex = user.dailyLogs.length - 1;
+            }
+
+            const todayLog = user.dailyLogs[logIndex];
+            if (!todayLog.nutrition) todayLog.nutrition = { breakfast: [], lunch: [], snacks: [], dinner: [] };
+
+            ['breakfast', 'lunch', 'snacks', 'dinner'].forEach(mealType => {
+                const planned = todayPlan[mealType] || [];
+                const logged = todayLog.nutrition[mealType] || [];
+
+                planned.forEach(pItem => {
+                    const exists = logged.some(lItem => lItem.name === pItem.name);
+                    if (!exists) {
+                        logged.push({
+                            name: pItem.name,
+                            calories: Number(pItem.calories) || 0,
+                            protein: String(pItem.protein || '0g'),
+                            carbs: String(pItem.carbs || '0g'),
+                            fats: String(pItem.fats || '0g')
+                        });
+                    }
+                });
+                // Ensure Mongoose tracks the nested change
+                todayLog.nutrition[mealType] = logged;
+            });
+            user.markModified('dailyLogs');
+        }
+
+        await user.save();
+        res.json({ success: true });
+    } catch (err) {
+        console.error('Save Meal Plan Error:', err);
+        res.status(500).json({ error: `Failed to save: ${err.message}` });
+    }
+});
+
+// AI-GENERATE meal plan
+app.post('/api/meal-plan/generate', authenticateToken, async (req, res) => {
+    const { preferences, calorieGoal, dietType, dietPreference, allergies, days, startDay } = req.body;
+    try {
+        const user = await User.findById(req.user.id);
+        const userCalories = calorieGoal || user?.goals?.calories || 2000;
+
+        const dayList = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+        const startIndex = startDay ? dayList.indexOf(startDay.toLowerCase()) : 0;
+        const totalDays = Math.min(parseInt(days) || 7, 7);
+
+        // Select 'n' days starting from startIndex, wrapping around if needed
+        const allDays = [];
+        for (let i = 0; i < totalDays; i++) {
+            allDays.push(dayList[(startIndex + i) % 7]);
+        }
+
+        // Split into smaller batches to avoid token/rate limits and ensures higher quality
+        const batchSize = 2; // Generate 2 days at a time for maximum reliability
+        const batches = [];
+        for (let i = 0; i < allDays.length; i += batchSize) {
+            batches.push(allDays.slice(i, i + batchSize));
+        }
+
+        const systemPrompt = `You are an expert sports dietitian. Return ONLY valid compact JSON — no markdown, no explanation.
+Format: an object with day-name keys. Each day: breakfast, lunch, dinner, snacks — arrays of food items.
+Each food item: {"name":"...","calories":300,"protein":"25g","carbs":"30g","fats":"8g","notes":"tip"}.`;
+
+        const mergedPlan = {};
+
+        for (const batch of batches) {
+            const userPrompt = `Create a meal plan ONLY for: ${batch.join(', ')}.
+Daily target: ~${userCalories} kcal. 
+Diet Style: ${dietType || 'balanced'}. 
+Preference: ${dietPreference === 'veg' ? 'STRICT VEGETARIAN (No meat/fish/egg)' : 'NON-VEGETARIAN (Can include meat/fish/egg)'}.
+Goals: ${preferences || 'general fitness'}. Avoid: ${allergies || 'none'}.
+Return exactly ${batch.length} keys: ${batch.join(', ')}. No extra text.`;
+
+            const completion = await getGroqCompletion([
+                { role: 'system', content: systemPrompt },
+                { role: 'user', content: userPrompt }
+            ]);
+
+            const content = (completion.choices[0]?.message?.content || '').trim();
+            let batchPlan = null;
+
+            // Strip markdown code fences if model wrapped in ```json
+            const stripped = content.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '');
+            const jsonMatch = stripped.match(/\{[\s\S]*\}/);
+
+            if (jsonMatch) {
+                try {
+                    batchPlan = JSON.parse(jsonMatch[0]);
+                } catch (_) {
+                    // Attempt recovery: trim to last complete day by finding last "}," pattern
+                    try {
+                        const raw = jsonMatch[0];
+                        const lastComplete = raw.lastIndexOf(']\n  }');
+                        if (lastComplete > 0) {
+                            const repaired = raw.substring(0, lastComplete + 4) + '\n}';
+                            batchPlan = JSON.parse(repaired);
+                        }
+                    } catch (recoverErr) {
+                        console.error('JSON recovery failed for batch:', batch.join(', '));
+                    }
+                }
+            }
+
+            if (batchPlan) {
+                Object.assign(mergedPlan, batchPlan);
+            } else {
+                throw new Error(`AI failed to generate a valid plan for: ${batch.join(', ')}. Please try again.`);
+            }
+        }
+
+        res.json({ success: true, mealPlan: mergedPlan });
+    } catch (err) {
+        console.error('Generate Meal Plan Error:', err.message);
+        res.status(500).json({ error: `AI generation failed: ${err.message}` });
+    }
+});
+
+// SUGGEST ALTERNATIVE for a food item
+app.post('/api/meal-plan/suggest-alternative', authenticateToken, async (req, res) => {
+    const { foodItem, dietType, allergies } = req.body;
+    try {
+        const prompt = `You are a dietitian. The user wants a flexible alternative for this food: "${foodItem.name}".
+Diet: ${dietType || 'balanced'}. Allergies to avoid: ${allergies || 'none'}.
+The original has ${foodItem.calories} kcal, ${foodItem.protein} protein, ${foodItem.carbs} carbs, ${foodItem.fats} fats.
+Return ONLY valid JSON for one replacement item: {"name":"...", "calories":123, "protein":"12g", "carbs":"15g", "fats":"4g", "notes":"Short suggestion why this works"}`;
+
+        const completion = await getGroqCompletion([{ role: 'user', content: prompt }]);
+        const content = (completion.choices[0]?.message?.content || '').trim();
+        const jsonMatch = content.match(/\{[\s\S]*\}/);
+        if (!jsonMatch) throw new Error("Invalid AI response");
+
+        res.json({ success: true, alternative: JSON.parse(jsonMatch[0]) });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// DELETE individual meal item from MEAL PLAN
+app.delete('/api/meal-plan/item', authenticateToken, async (req, res) => {
+    const { day, mealType, itemName } = req.body;
+    try {
+        const user = await User.findById(req.user.id);
+        const dayKey = day.toLowerCase().trim();
+
+        if (user.mealPlan && user.mealPlan.has(dayKey)) {
+            const dayPlan = user.mealPlan.get(dayKey);
+            if (dayPlan && dayPlan[mealType]) {
+                // Filter out the specific item
+                dayPlan[mealType] = dayPlan[mealType].filter(item => item.name !== itemName);
+                user.mealPlan.set(dayKey, dayPlan);
+                user.markModified('mealPlan');
+                await user.save();
+                return res.json({ success: true });
+            }
+        }
+        res.status(404).json({ error: 'Item not found in meal plan' });
+    } catch (err) {
+        console.error('Delete Meal Plan Item Error:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// DELETE individual meal item from dashboard (tracked items)
+app.delete('/api/dashboard/meal-item', authenticateToken, async (req, res) => {
+    const { date, mealType, itemName } = req.body;
+    try {
+        const user = await User.findById(req.user.id);
+        const targetDate = new Date(date).toISOString().split('T')[0];
+
+        const log = user.dailyLogs.find(l => {
+            const d = (l.date instanceof Date) ? l.date : new Date(l.date);
+            return !isNaN(d) && d.toISOString().split('T')[0] === targetDate;
+        });
+
+        if (log && log.nutrition && log.nutrition[mealType]) {
+            log.nutrition[mealType] = log.nutrition[mealType].filter(item => item.name !== itemName);
+            user.markModified('dailyLogs');
+            await user.save();
+            res.json({ success: true });
+        } else {
+            res.status(404).json({ error: 'Item not found' });
+        }
+    } catch (err) {
+        console.error('Delete Meal Item Error:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 app.post('/api/workout-plans', async (req, res) => {
     const { query } = req.body;

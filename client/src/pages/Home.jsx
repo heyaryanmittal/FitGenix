@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNotification } from '../context/NotificationContext';
-import { FaTrash } from 'react-icons/fa';
+import { FaTrash, FaCalendarAlt, FaArrowRight, FaExclamationTriangle } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import API_URL from '../apiConfig';
 
 const Modal = ({ isOpen, onClose, title, children }) => (
@@ -30,6 +31,7 @@ const Modal = ({ isOpen, onClose, title, children }) => (
 
 const Home = () => {
     const { showNotification } = useNotification();
+    const navigate = useNavigate();
     const [quote, setQuote] = useState("");
     const [author, setAuthor] = useState("");
     const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
@@ -39,6 +41,7 @@ const Home = () => {
         return saved ? JSON.parse(saved) : null;
     });
     const [loading, setLoading] = useState(!data);
+    const [todayMealPlan, setTodayMealPlan] = useState(null);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingGoal, setEditingGoal] = useState({ key: '', label: '', value: 0 });
@@ -78,29 +81,102 @@ const Home = () => {
     }).reverse();
 
     const fetchData = async () => {
-        if (!data) setLoading(true);
+        const fetchDashboardData = async () => {
+            if (!data) setLoading(true);
+            try {
+                const token = localStorage.getItem('token');
+                const res = await fetch(`${API_URL}/api/dashboard?date=${selectedDate}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const result = await res.json();
+                if (result.success) {
+                    setData(result.data);
+                    const dateKey = selectedDate;
+                    localStorage.setItem(`dashboard_cache_${dateKey}`, JSON.stringify(result.data));
+                }
+            } catch (err) {
+                console.error('Fetch error:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchDashboardData();
+    };
+
+    const deleteItem = async (mealType, itemName) => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`${API_URL}/api/dashboard?date=${selectedDate}`, {
-                headers: { 'Authorization': `Bearer ${token}` }
+            const res = await fetch(`${API_URL}/api/dashboard/meal-item`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ date: selectedDate, mealType, itemName })
             });
             const result = await res.json();
-            if (res.ok) {
-                setData(result);
-                localStorage.setItem(`dashboard_cache_${selectedDate}`, JSON.stringify(result));
+            if (result.success) {
+                showNotification(`Removed ${itemName} from ${mealType}`, 'success');
+                fetchData(); // Refresh labels
             }
         } catch (err) {
-            console.error("Failed to load dashboard", err);
-        } finally {
-            setLoading(false);
+            showNotification('Failed to delete item', 'error');
         }
     };
 
     useEffect(() => {
+        const fetchMealPlan = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                const res = await fetch(`${API_URL}/api/meal-plan`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const result = await res.json();
+                if (result.success && result.mealPlan) {
+                    const todayName = new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+                    setTodayMealPlan(result.mealPlan[todayName] || null);
+                }
+            } catch (err) {
+                console.error('Failed to load meal plan', err);
+            }
+        };
+
         const randomIndex = Math.floor(Math.random() * quotes.length);
         setQuote(quotes[randomIndex].text);
         setAuthor(quotes[randomIndex].author);
-    }, []);
+
+        fetchMealPlan();
+    }, [selectedDate]);
+
+    const deletePlannedItem = async (mealType, itemName) => {
+        try {
+            const token = localStorage.getItem('token');
+            const dayName = new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+            const res = await fetch(`${API_URL}/api/meal-plan/item`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ day: dayName, mealType, itemName })
+            });
+            const result = await res.json();
+            if (result.success) {
+                showNotification(`Removed planned ${itemName} from ${mealType}`, 'success');
+                // Refresh both the log data and the meal plan state
+                fetchData();
+                const mpRes = await fetch(`${API_URL}/api/meal-plan`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const mpResult = await mpRes.json();
+                if (mpResult.success && mpResult.mealPlan) {
+                    setTodayMealPlan(mpResult.mealPlan[dayName] || null);
+                }
+            }
+        } catch (err) {
+            showNotification('Failed to delete planned item', 'error');
+        }
+    };
 
     useEffect(() => {
         fetchData();
@@ -198,17 +274,27 @@ const Home = () => {
     const totals = React.useMemo(() => {
         let calories = 0, protein = 0, carbs = 0;
         if (!nutrition) return { calories: 0, protein: 0, carbs: 0 };
+
         ['breakfast', 'lunch', 'dinner', 'snacks'].forEach(mealType => {
-            if (nutrition[mealType]) {
-                nutrition[mealType].forEach(item => {
-                    calories += item.calories || 0;
-                    protein += parseInt(item.protein) || 0;
-                    carbs += parseInt(item.carbs) || 0;
-                });
-            }
+            const trackedItems = nutrition[mealType] || [];
+            const plannedItems = todayMealPlan?.[mealType] || [];
+
+            // Merge and deduplicate by name (same logic as in the render)
+            const combinedItems = [...trackedItems];
+            plannedItems.forEach(pItem => {
+                if (!combinedItems.some(tItem => tItem.name.toLowerCase() === pItem.name.toLowerCase())) {
+                    combinedItems.push(pItem);
+                }
+            });
+
+            combinedItems.forEach(item => {
+                calories += item.calories || 0;
+                protein += parseInt(item.protein) || 0;
+                carbs += parseInt(item.carbs) || 0;
+            });
         });
         return { calories, protein, carbs };
-    }, [nutrition]);
+    }, [nutrition, todayMealPlan]);
 
     return (
         <div className="space-y-6 pb-12">
@@ -333,7 +419,10 @@ const Home = () => {
 
                         <div className="cursor-pointer group" onClick={() => openGoalModal('calories', 'Calories Limit', goals.calories)}>
                             <div className="flex justify-between mb-2">
-                                <span className="text-sm font-bold text-gray-600 dark:text-gray-400 group-hover:text-rose-500 transition-colors">Total Calories ✎</span>
+                                <span className="text-sm font-bold text-gray-600 dark:text-gray-400 group-hover:text-rose-500 transition-colors flex items-center gap-1.5">
+                                    Total Calories ✎
+                                    {totals.calories > goals.calories && <FaExclamationTriangle className="text-rose-500 animate-pulse" size={12} title="Goal Exceeded!" />}
+                                </span>
                                 <span className="text-sm font-black text-rose-500">{totals.calories} / {goals.calories} kcal</span>
                             </div>
                             <div className="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-3">
@@ -347,7 +436,10 @@ const Home = () => {
 
                         <div className="cursor-pointer group" onClick={() => openGoalModal('protein', 'Protein Goal', goals.protein)}>
                             <div className="flex justify-between mb-2">
-                                <span className="text-sm font-bold text-gray-600 dark:text-gray-400 group-hover:text-blue-500 transition-colors">Protein Intake ✎</span>
+                                <span className="text-sm font-bold text-gray-600 dark:text-gray-400 group-hover:text-blue-500 transition-colors flex items-center gap-1.5">
+                                    Protein Intake ✎
+                                    {totals.protein > goals.protein && <FaExclamationTriangle className="text-blue-500 animate-pulse" size={12} title="Goal Exceeded!" />}
+                                </span>
                                 <span className="text-sm font-black text-blue-500">{totals.protein}g / {goals.protein}g</span>
                             </div>
                             <div className="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-3">
@@ -361,7 +453,10 @@ const Home = () => {
 
                         <div className="cursor-pointer group" onClick={() => openGoalModal('carbs', 'Carbs Goal', goals.carbs)}>
                             <div className="flex justify-between mb-2">
-                                <span className="text-sm font-bold text-gray-600 dark:text-gray-400 group-hover:text-orange-400 transition-colors">Carbs Intake ✎</span>
+                                <span className="text-sm font-bold text-gray-600 dark:text-gray-400 group-hover:text-orange-400 transition-colors flex items-center gap-1.5">
+                                    Carbs Intake ✎
+                                    {totals.carbs > goals.carbs && <FaExclamationTriangle className="text-orange-400 animate-pulse" size={12} title="Goal Exceeded!" />}
+                                </span>
                                 <span className="text-sm font-black text-orange-400">{totals.carbs}g / {goals.carbs}g</span>
                             </div>
                             <div className="w-full bg-gray-100 dark:bg-gray-700 rounded-full h-3">
@@ -376,35 +471,72 @@ const Home = () => {
                 </div>
 
                 <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-md border border-gray-100 dark:border-gray-700">
-                    <h3 className="text-xl font-bold mb-4 text-gray-800 dark:text-gray-200 flex items-center gap-2">
-                        <span className="w-2 h-8 bg-green-500 rounded-full"></span>
-                        Meal Details
-                    </h3>
+                    <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-xl font-bold text-gray-800 dark:text-gray-200 flex items-center gap-2">
+                            <span className="w-2 h-8 bg-green-500 rounded-full"></span>
+                            Meal Details
+                        </h3>
+                        <button
+                            onClick={() => navigate('/meal-planner')}
+                            className="flex items-center gap-1.5 text-xs font-bold text-primary hover:underline"
+                        >
+                            <FaCalendarAlt size={11} /> Meal Planner <FaArrowRight size={10} />
+                        </button>
+                    </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                        {['breakfast', 'lunch', 'snacks', 'dinner'].map((meal, idx) => (
-                            <div key={idx} className="bg-gray-50 dark:bg-gray-700/50 p-4 md:p-6 rounded-2xl border border-transparent hover:border-green-500 transition-all group">
-                                <h4 className="font-black text-gray-800 dark:text-white mb-3 md:mb-4 capitalize text-base md:text-lg border-b border-gray-200 dark:border-gray-600 pb-2">{meal}</h4>
-                                <div className="space-y-3">
-                                    {loading && !data ? (
-                                        <div className="h-10 bg-gray-100 dark:bg-gray-800 animate-pulse rounded-lg"></div>
-                                    ) : nutrition[meal]?.length > 0 ? (
-                                        nutrition[meal].map((item, i) => (
-                                            <div key={i} className="text-sm leading-relaxed text-gray-700 dark:text-gray-300">
-                                                <p className="font-bold text-sm md:text-base line-clamp-1">• {item.name}</p>
-                                                <p className="opacity-80 font-medium text-[10px] md:text-xs ml-4 bg-white/50 dark:bg-gray-800/50 px-2 py-1 rounded inline-block">
-                                                    Cal: <span className="text-rose-500 font-bold">{item.calories}</span> |
-                                                    P: <span className="text-blue-500 font-bold">{item.protein}</span> |
-                                                    C: <span className="text-orange-400 font-bold">{item.carbs}</span>
-                                                </p>
-                                            </div>
-                                        ))
-                                    ) : (
-                                        <p className="text-[10px] md:text-xs text-gray-400 italic">No {meal} tracked</p>
-                                    )}
+                        {['breakfast', 'lunch', 'snacks', 'dinner'].map((meal, idx) => {
+                            const trackedItems = nutrition[meal] || [];
+                            const plannedItems = todayMealPlan?.[meal] || [];
+
+                            // Merge and deduplicate by name
+                            const combinedItems = [...trackedItems];
+                            plannedItems.forEach(pItem => {
+                                if (!combinedItems.some(tItem => tItem.name.toLowerCase() === pItem.name.toLowerCase())) {
+                                    combinedItems.push({ ...pItem, isPlanned: true });
+                                }
+                            });
+
+                            return (
+                                <div key={idx} className="bg-gray-50 dark:bg-gray-700/50 p-4 md:p-6 rounded-2xl border border-transparent hover:border-green-500 transition-all group">
+                                    <h4 className="font-black text-gray-800 dark:text-white mb-3 md:mb-4 capitalize text-base md:text-lg border-b border-gray-200 dark:border-gray-600 pb-2">{meal}</h4>
+                                    <div className="space-y-3">
+                                        {loading && !data ? (
+                                            <div className="h-10 bg-gray-100 dark:bg-gray-800 animate-pulse rounded-lg"></div>
+                                        ) : combinedItems.length > 0 ? (
+                                            combinedItems.map((item, i) => (
+                                                <div key={i} className="text-sm leading-relaxed text-gray-700 dark:text-gray-300 group/item relative pr-7 border-b border-gray-100 dark:border-gray-700/30 last:border-0 pb-3 h-full">
+                                                    <div className="flex items-start justify-between gap-1.5 min-w-0 pr-1">
+                                                        <p className="font-bold text-sm md:text-base line-clamp-2 leading-tight flex-1 text-gray-800 dark:text-gray-100">
+                                                            • {item.name}
+                                                        </p>
+                                                        {item.isPlanned && (
+                                                            <span className="flex-shrink-0 text-[8px] bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-300 px-1.5 py-0.5 rounded font-black uppercase tracking-tighter mt-1">Planned</span>
+                                                        )}
+                                                    </div>
+                                                    <div className="mt-1.5 flex flex-wrap gap-x-2 gap-y-1">
+                                                        <p className="opacity-80 font-medium text-[10px] md:text-xs ml-4 bg-white/50 dark:bg-gray-800/50 px-2 py-0.5 rounded inline-block">
+                                                            Cal: <span className="text-rose-500 font-bold">{item.calories}</span> |
+                                                            P: <span className="text-blue-500 font-bold">{item.protein}</span> |
+                                                            C: <span className="text-orange-400 font-bold">{item.carbs}</span>
+                                                        </p>
+                                                    </div>
+                                                    <button
+                                                        onClick={() => item.isPlanned ? deletePlannedItem(meal, item.name) : deleteItem(meal, item.name)}
+                                                        className="absolute right-0 top-1 w-6 h-6 rounded-lg bg-red-50 dark:bg-red-900/20 flex items-center justify-center text-red-400 opacity-0 group-hover/item:opacity-100 transition-all hover:text-red-600 hover:scale-110"
+                                                        title={item.isPlanned ? "Remove from plan" : "Remove from log"}
+                                                    >
+                                                        <FaTrash size={10} />
+                                                    </button>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <p className="text-[10px] md:text-xs text-gray-400 italic">No {meal} tracked</p>
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </div>
             </div>

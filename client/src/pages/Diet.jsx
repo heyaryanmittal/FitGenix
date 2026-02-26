@@ -157,6 +157,7 @@ const Diet = () => {
                                         {['Breakfast', 'Lunch', 'Snacks', 'Dinner'].map((meal) => (
                                             <button
                                                 key={meal}
+                                                type="button"
                                                 onClick={() => setMealType(meal)}
                                                 className={`py-2 px-4 rounded-lg text-sm font-medium transition-colors ${mealType === meal
                                                     ? 'bg-green-600 text-white'
@@ -169,6 +170,7 @@ const Diet = () => {
                                     </div>
 
                                     <button
+                                        type="button"
                                         onClick={addToMeal}
                                         className="w-full bg-green-600 text-white py-3 rounded-xl font-bold hover:bg-green-700 transition-colors flex items-center justify-center gap-2 mt-4 shadow-lg shadow-green-600/20"
                                     >

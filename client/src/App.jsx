@@ -9,6 +9,7 @@ import Home from './pages/Home';
 import Exercises from './pages/Exercises';
 import Diet from './pages/Diet';
 import WorkoutPlans from './pages/WorkoutPlans';
+import MealPlanner from './pages/MealPlanner';
 import Settings from './pages/Settings';
 import Profile from './pages/Profile';
 
@@ -31,6 +32,7 @@ function App() {
             <Route path="/exercises" element={<Exercises />} />
             <Route path="/workout-plans" element={<WorkoutPlans />} />
             <Route path="/diet" element={<Diet />} />
+            <Route path="/meal-planner" element={<MealPlanner />} />
             <Route path="/settings" element={<Settings />} />
           </Route>
         </Routes>
@@ -41,3 +43,4 @@ function App() {
 }
 
 export default App;
+

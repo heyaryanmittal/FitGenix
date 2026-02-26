@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaHome, FaDumbbell, FaUtensils, FaInfoCircle, FaCog, FaClipboardList } from 'react-icons/fa';
+import { FaHome, FaDumbbell, FaUtensils, FaInfoCircle, FaCog, FaClipboardList, FaCalendarAlt } from 'react-icons/fa';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
@@ -18,6 +18,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         { name: "Exercises", path: "/exercises", icon: <FaDumbbell size={20} /> },
         { name: "Workout Plans", path: "/workout-plans", icon: <FaClipboardList size={20} /> },
         { name: "Diet and\nNutrition", path: "/diet", icon: <FaUtensils size={20} /> },
+        { name: "Meal\nPlanner", path: "/meal-planner", icon: <FaCalendarAlt size={20} /> },
         { name: "Settings", path: "/settings", icon: <FaCog size={20} /> },
     ];
 

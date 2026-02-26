@@ -34,9 +34,12 @@ const LandingPage = () => {
     ];
 
     const reviews = [
-        { name: "Rahul Sharma", role: "Software Engineer", img: "https://randomuser.me/api/portraits/men/32.jpg", text: "FitGenix changed my life. The AI plans are so accurate, strictly followed the diet and lost 8kg in 2 months!" },
-        { name: "Priya Patel", role: "Student", img: "https://randomuser.me/api/portraits/women/44.jpg", text: "Finally an app that understands Indian diet! The macro breakdown for homemade food is a game changer." },
-        { name: "Amit Verma", role: "Businessman", img: "https://randomuser.me/api/portraits/men/86.jpg", text: "The adaptive workouts are perfect for my busy schedule. I can train at home or gym and get results." }
+        { name: "Rahul Sharma", role: "Software Engineer", img: "/rahul_sharma.jpg", text: "FitGenix changed my life. The AI plans are so accurate, strictly followed the diet and lost 8kg in 2 months!" },
+        { name: "Priya Patel", role: "Marketing Head", img: "/priya_patell.jpg", text: "Finally an app that understands Indian diet! The macro breakdown for homemade food is a total game changer." },
+        { name: "Amit Verma", role: "Business Owner", img: "/amit_verma.jpg", text: "The adaptive workouts are perfect for my busy schedule. I can train at home or gym and get real results." },
+        { name: "Sneha Gupta", role: "College Student", img: "/sneha_gupta.jpg", text: "The AI Coach is like having a personal trainer 24/7. It helped me fix my posture and build strength safely." },
+        { name: "Vikram Reddy", role: "Fitness Enthusiast", img: "/vikram_reddy.jpg", text: "Best macro tracker I've used. It's fast, intuitive, and the AI suggestions for meals are actually delicious." },
+        { name: "Anjali Singh", role: "UX Designer", img: "/anjali_singh.jpg", text: "The UI is stunning and the user experience is seamless. It makes tracking my fitness journey feel effortless." }
     ];
 
     return (
@@ -168,50 +171,104 @@ const LandingPage = () => {
 
             <section className="py-24 bg-gray-50">
                 <div className="max-w-7xl mx-auto px-6">
-                    <div className="text-center mb-20">
-                        <span className="text-primary font-bold tracking-widest uppercase text-3xl mb-4 block">Why FitGenix?</span>
-                        <h2 className="text-2xl md:text-3xl font-bold text-gray-500 mb-6">Not Just Another App.</h2>
-                        <p className="text-gray-500 text-lg max-w-2xl mx-auto">We use advanced Llama-3 AI models to analyze your lifestyle and create plans that actually stick.</p>
+                    <div className="text-center mb-20 space-y-4">
+                        <motion.span
+                            initial={{ opacity: 0, y: 10 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            className="text-primary font-black tracking-[0.3em] uppercase text-sm bg-orange-50 dark:bg-orange-900/20 px-4 py-2 rounded-full inline-block"
+                        >
+                            Why Choose FitGenix?
+                        </motion.span>
+                        <h2 className="text-4xl md:text-6xl font-black text-gray-900 leading-tight">
+                            The Science of <span className="text-primary">Personalization.</span>
+                        </h2>
+                        <p className="text-gray-500 text-lg md:text-xl max-w-3xl mx-auto font-light leading-relaxed">
+                            Most fitness apps give you a static plan. We use <strong>Llama-3.3 AI</strong> to build a living, breathing coach that evolves with every rep and every meal you track.
+                        </p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        {/* Card 1 */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {/* Feature 1: AI Neural Coach */}
                         <motion.div
-                            whileHover={{ y: -10 }}
-                            className="bg-white p-8 rounded-[2rem] shadow-sm hover:shadow-xl transition-all border border-gray-100"
+                            whileHover={{ y: -12, scale: 1.02 }}
+                            className="bg-white p-8 rounded-[2.5rem] shadow-sm hover:shadow-2xl transition-all border border-gray-100 group"
                         >
-                            <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-3xl mb-6">
+                            <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
                                 <FaBrain />
                             </div>
-                            <h3 className="text-2xl font-bold text-gray-900 mb-3">Neural AI Coaching</h3>
-                            <p className="text-gray-500 leading-relaxed">
-                                Our chatbot understands context. Ask "I have back pain, what should I avoid?" and get medically-sound (general) advice instantly.
+                            <h3 className="text-2xl font-bold text-gray-900 mb-4 tracking-tight">AI Neural Coach</h3>
+                            <p className="text-gray-500 leading-relaxed font-medium">
+                                A 24/7 intelligent companion that understands your injuries, plateaus, and schedule. It's not a bot—it's a partner.
                             </p>
                         </motion.div>
 
+                        {/* Feature 2: Meal Precision */}
                         <motion.div
-                            whileHover={{ y: -10 }}
-                            className="bg-white p-8 rounded-[2rem] shadow-sm hover:shadow-xl transition-all border border-gray-100 relative overflow-hidden"
+                            whileHover={{ y: -12, scale: 1.02 }}
+                            className="bg-white p-8 rounded-[2.5rem] shadow-sm hover:shadow-2xl transition-all border border-gray-100 group"
                         >
-                            <div className="w-16 h-16 bg-orange-50 text-primary rounded-2xl flex items-center justify-center text-3xl mb-6">
-                                <FaDumbbell />
-                            </div>
-                            <h3 className="text-2xl font-bold text-gray-900 mb-3">Adaptive Workouts</h3>
-                            <p className="text-gray-500 leading-relaxed">
-                                Whether you have a full gym or just open floor space, we generate the perfect routine for your available equipment.
-                            </p>
-                        </motion.div>
-
-                        <motion.div
-                            whileHover={{ y: -10 }}
-                            className="bg-white p-8 rounded-[2rem] shadow-sm hover:shadow-xl transition-all border border-gray-100"
-                        >
-                            <div className="w-16 h-16 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center text-3xl mb-6">
+                            <div className="w-16 h-16 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:bg-green-600 group-hover:text-white transition-colors duration-300">
                                 <FaCarrot />
                             </div>
-                            <h3 className="text-2xl font-bold text-gray-900 mb-3">Macro Precision</h3>
-                            <p className="text-gray-500 leading-relaxed">
-                                Snap a photo or type a meal, and we'll break down the protein, carbs, and fats instantly. No more guessing.
+                            <h3 className="text-2xl font-bold text-gray-900 mb-4 tracking-tight">Smart Meal Planning</h3>
+                            <p className="text-gray-500 leading-relaxed font-medium">
+                                Automated 7-day meal plans tailored to your specific macros, dietary restrictions, and cultural preferences.
+                            </p>
+                        </motion.div>
+
+                        {/* Feature 3: Dynamic Workouts */}
+                        <motion.div
+                            whileHover={{ y: -12, scale: 1.02 }}
+                            className="bg-white p-8 rounded-[2.5rem] shadow-sm hover:shadow-2xl transition-all border border-gray-100 group"
+                        >
+                            <div className="w-16 h-16 bg-orange-50 text-primary rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:bg-primary group-hover:text-white transition-colors duration-300">
+                                <FaDumbbell />
+                            </div>
+                            <h3 className="text-2xl font-bold text-gray-900 mb-4 tracking-tight">Adaptive Workouts</h3>
+                            <p className="text-gray-500 leading-relaxed font-medium">
+                                No gym? No problem. We analyze your available equipment and generate effective routines that maximize results anywhere.
+                            </p>
+                        </motion.div>
+
+                        {/* Feature 4: Real-time Analysis */}
+                        <motion.div
+                            whileHover={{ y: -12, scale: 1.02 }}
+                            className="bg-white p-8 rounded-[2.5rem] shadow-sm hover:shadow-2xl transition-all border border-gray-100 group"
+                        >
+                            <div className="w-16 h-16 bg-rose-50 text-rose-600 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:bg-rose-600 group-hover:text-white transition-colors duration-300">
+                                <FaFire />
+                            </div>
+                            <h3 className="text-2xl font-bold text-gray-900 mb-4 tracking-tight">Burn Analysis</h3>
+                            <p className="text-gray-500 leading-relaxed font-medium">
+                                Real-time tracking of calories burned vs. consumed. Visualize your progress with intuitive daily goal progress bars.
+                            </p>
+                        </motion.div>
+
+                        {/* Feature 5: Video Tutorials */}
+                        <motion.div
+                            whileHover={{ y: -12, scale: 1.02 }}
+                            className="bg-white p-8 rounded-[2.5rem] shadow-sm hover:shadow-2xl transition-all border border-gray-100 group"
+                        >
+                            <div className="w-16 h-16 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:bg-purple-600 group-hover:text-white transition-colors duration-300">
+                                <FaPlay />
+                            </div>
+                            <h3 className="text-2xl font-bold text-gray-900 mb-4 tracking-tight">Crystal Clear Form</h3>
+                            <p className="text-gray-500 leading-relaxed font-medium">
+                                Every exercise comes with a high-definition video tutorial to ensure you're lifting safe and getting the most out of every set.
+                            </p>
+                        </motion.div>
+
+                        {/* Feature 6: Dashboard Insights */}
+                        <motion.div
+                            whileHover={{ y: -12, scale: 1.02 }}
+                            className="bg-white p-8 rounded-[2.5rem] shadow-sm hover:shadow-2xl transition-all border border-gray-100 group"
+                        >
+                            <div className="w-16 h-16 bg-yellow-50 text-yellow-600 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:bg-yellow-600 group-hover:text-white transition-colors duration-300">
+                                <FaArrowRight />
+                            </div>
+                            <h3 className="text-2xl font-bold text-gray-900 mb-4 tracking-tight">Weekly Strategy</h3>
+                            <p className="text-gray-500 leading-relaxed font-medium">
+                                Deep dive into your weekly performance. Our AI identifies patterns and suggests adjustments to keep you moving forward.
                             </p>
                         </motion.div>
                     </div>
