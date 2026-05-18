@@ -30,7 +30,7 @@ const connectDB = async () => {
             socketTimeoutMS: 45000,
         });
         isConnected = true;
-        console.log('MongoDB connected');
+        console.log('🚀 MongoDB connected');
     } catch (err) {
         isConnected = false;
         console.error('MongoDB connection error:', err.message);
@@ -405,6 +405,40 @@ async function getGroqCompletion(messages) {
     }
 }
 
+function getChatbotFallback(message) {
+    const msg = (message || '').toLowerCase();
+
+    if (msg.includes('hello') || msg.includes('hi') || msg.includes('hey') || msg.includes('greet')) {
+        return "Hey there! I'm FitGenix AI, your friendly fitness coach. 🚀 How can I help you crush your training or nutrition goals today?";
+    }
+
+    if (msg.includes('workout') || msg.includes('exercise') || msg.includes('routine') || msg.includes('train') || msg.includes('gym')) {
+        return "A great starting workout split is:\n\n1. **Push (Chest/Shoulders/Triceps)**: Push-ups or Chest Press, Overhead Press, Tricep Dips (3 sets x 12 reps).\n2. **Pull (Back/Biceps)**: Pull-ups or Lat Pulldowns, Bicep Curls, Dumbbell Rows (3 sets x 12 reps).\n3. **Legs/Core**: Squats, Lunges, Calf Raises, and Planks (3 sets x 15 reps).\n\nRemember to warm up for 5 minutes and focus on proper form!";
+    }
+
+    if (msg.includes('diet') || msg.includes('nutrition') || msg.includes('food') || msg.includes('eat') || msg.includes('calorie') || msg.includes('protein')) {
+        return "Nutrition is 70% of the game! Focus on these essentials:\n\n- **Proteins**: Chicken breast, tofu, fish, eggs, or lentils to rebuild muscle.\n- **Carbs**: Brown rice, whole oats, and sweet potatoes for sustained energy.\n- **Fats**: Avocados, nuts, seeds, and olive oil for hormonal balance.\n\nKeep high-protein snacks handy, and try to match your calorie intake to your current fitness goals.";
+    }
+
+    if (msg.includes('water') || msg.includes('hydrate') || msg.includes('drink')) {
+        return "Hydration is key! Aim to drink at least **2.5 to 3 liters** of water daily.\n\nWater aids recovery, prevents muscle cramps, and keeps your energy levels high during workouts. Keep a reusable bottle with you and sip throughout the day!";
+    }
+
+    if (msg.includes('sleep') || msg.includes('rest') || msg.includes('recovery') || msg.includes('sore')) {
+        return "Recovery is when the actual muscle growth happens! Make sure to:\n\n- Aim for **7–8 hours of sound sleep** each night.\n- Rest at least 48 hours before training the same muscle group again.\n- Stretching and foam rolling can significantly reduce soreness.";
+    }
+
+    if (msg.includes('lose') || msg.includes('fat') || msg.includes('weight') || msg.includes('cut')) {
+        return "To burn fat and lose weight successfully:\n\n- Maintain a moderate **calorie deficit** (burn more than you consume).\n- Prioritize **high-protein** meals to preserve muscle and stay full.\n- Mix strength training with light cardio (like brisk walking) for optimal results.";
+    }
+
+    if (msg.includes('gain') || msg.includes('bulk') || msg.includes('muscle')) {
+        return "To build muscle and bulk up cleanly:\n\n- Eat in a slight **calorie surplus** (~250-500 calories above maintenance).\n- Target high protein intake (about 1.6 to 2 grams of protein per kg of bodyweight).\n- Focus on **progressive overload** in the gym, slowly increasing weight or reps over time.";
+    }
+
+    return "I'd love to help you with that! As your fitness coach, I recommend focusing on consistent training (3-4 times a week), eating balanced high-protein meals, sleeping 8 hours, and staying well-hydrated.\n\nLet me know if you need specific exercise tips or meal planning suggestions!";
+}
+
 app.post('/api/chatbot', async (req, res) => {
     const { message } = req.body;
     try {
@@ -450,7 +484,12 @@ Always prioritize clarity, minimal length, and friendly readability over detaile
         res.json({ reply });
     } catch (error) {
         console.error("Chatbot Route Error:", error.message);
-        res.status(500).json({ error: "AI Service Unavailable. Please check API Key." });
+        try {
+            const fallbackReply = getChatbotFallback(message);
+            res.json({ reply: fallbackReply });
+        } catch (fallbackErr) {
+            res.status(500).json({ error: "AI Service Unavailable. Please check API Key." });
+        }
     }
 });
 
@@ -699,7 +738,19 @@ Return ONLY valid JSON for one replacement item: {"name":"...", "calories":123, 
 
         res.json({ success: true, alternative: JSON.parse(jsonMatch[0]) });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        console.error("Suggest Alternative AI Fallback:", err.message);
+        // Clean high-quality fallback food selection
+        res.json({
+            success: true,
+            alternative: {
+                name: `Grilled ${foodItem?.name || 'Protein Alternative'}`,
+                calories: Math.max(100, Math.round((foodItem?.calories || 200) * 0.9)),
+                protein: foodItem?.protein || "20g",
+                carbs: foodItem?.carbs || "15g",
+                fats: foodItem?.fats || "8g",
+                notes: "A lower-calorie and high-protein alternative to keep your macros balanced."
+            }
+        });
     }
 });
 
@@ -797,7 +848,7 @@ app.post('/api/workout-plans', async (req, res) => {
 
 if (process.env.NODE_ENV !== 'production') {
     app.listen(PORT, () => {
-        console.log(`Server running on port ${PORT}`);
+        console.log(`✅ Server running on port ${PORT}`);
     });
 }
 

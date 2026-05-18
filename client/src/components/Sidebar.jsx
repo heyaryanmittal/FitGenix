@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaHome, FaDumbbell, FaUtensils, FaInfoCircle, FaCog, FaClipboardList, FaCalendarAlt } from 'react-icons/fa';
+import { FaHome, FaDumbbell, FaUtensils, FaInfoCircle, FaCog, FaClipboardList, FaCalendarAlt, FaTimes } from 'react-icons/fa';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
@@ -31,8 +31,25 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
     return (
         <aside className={`fixed inset-y-0 left-0 w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 shadow-xl z-40 transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} transition-all duration-500 md:translate-x-0 md:static p-6 flex flex-col h-full overflow-hidden`}>
-
-
+            
+            {/* Sidebar Header */}
+            <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100 dark:border-gray-800/50">
+                <div 
+                    onClick={() => handleNavigation('/dashboard')} 
+                    className="flex items-center gap-2 cursor-pointer select-none"
+                >
+                    <span className="text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-primary to-orange-500 tracking-tight">
+                        FitGenix
+                    </span>
+                </div>
+                <button
+                    onClick={toggleSidebar}
+                    className="md:hidden p-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 active:scale-95 transition-all shadow-sm"
+                    aria-label="Close Sidebar"
+                >
+                    <FaTimes size={16} />
+                </button>
+            </div>
 
             <nav className="flex-1 flex flex-col gap-2 overflow-y-auto overflow-x-hidden scrollbar-hide">
                 {menuItems.map((item) => {
