@@ -3,48 +3,75 @@
 @tailwind utilities;
 
 @layer base {
-
   html,
   body {
-    @apply bg-light dark:bg-dark text-text-main dark:text-light antialiased selection:bg-primary/20 selection:text-primary font-sans scrollbar-hide transition-all duration-500 ease-in-out;
+    background-color: #FAFAFC;
+    color: #0F172A;
+    font-family: 'Inter', sans-serif;
     min-height: 100%;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, .font-display {
+    font-family: 'Sora', sans-serif;
+  }
+
+  .font-mono {
+    font-family: 'JetBrains Mono', monospace;
   }
 }
 
-.btn-primary {
-  @apply bg-primary text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-primary-hover hover:shadow-primary/30 transition-all duration-300 transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-2;
+/* Template 2: Sunrise Kinetic Light & Fresh Styling */
+.sunrise-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 107, 0, 0.15);
+  border-radius: 1.25rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 15px 35px -10px rgba(255, 107, 0, 0.08), 0 4px 10px rgba(0, 0, 0, 0.03);
 }
 
-.section-padding {
-  @apply py-20 px-6 md:px-12 lg:px-24;
+.sunrise-card:hover {
+  border-color: rgba(255, 107, 0, 0.4);
+  box-shadow: 0 20px 40px -10px rgba(255, 107, 0, 0.18), 0 8px 16px rgba(0, 0, 0, 0.04);
+  transform: translateY(-2px);
+}
+
+.sunrise-card-active {
+  background: #FFFFFF;
+  border: 2px solid #FF6B00;
+  box-shadow: 0 20px 40px -10px rgba(255, 107, 0, 0.25);
+}
+
+.sunrise-glow-border {
+  border-color: rgba(255, 107, 0, 0.4);
+  box-shadow: 0 0 25px -5px rgba(255, 107, 0, 0.2);
 }
 
 /* Custom Scrollbar */
-.custom-scrollbar::-webkit-scrollbar {
+::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
+::-webkit-scrollbar-track {
+  background: #FAFAFC;
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(156, 163, 175, 0.3);
-  border-radius: 10px;
+::-webkit-scrollbar-thumb {
+  background: #E2E8F0;
+  border-radius: 9999px;
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(249, 115, 22, 0.5);
+::-webkit-scrollbar-thumb:hover {
+  background: #FF6B00;
 }
 
-/* Hide Scrollbar Utility */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
 
 .scrollbar-hide {
   -ms-overflow-style: none;
-  /* IE and Edge */
   scrollbar-width: none;
-  /* Firefox */
 }

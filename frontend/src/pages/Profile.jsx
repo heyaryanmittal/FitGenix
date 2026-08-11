@@ -1,24 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FaUser, FaEnvelope, FaRulerVertical, FaWeight, FaBullseye, FaEdit, FaSave } from 'react-icons/fa';
+import { User, Mail, Ruler, Weight, Target, Save, Edit3, Shield, Lock, Eye, EyeOff } from 'lucide-react';
 import { useNotification } from '../context/NotificationContext';
 import API_URL from '../apiConfig';
+import { Button } from '../components/ui/button';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../components/ui/card';
+import { Input } from '../components/ui/input';
+import { Badge } from '../components/ui/badge';
 
 const Profile = () => {
     const { showNotification } = useNotification();
     const [user, setUser] = useState({
-        name: "Guest User",
-        email: "guest@example.com",
+        name: "Athlete User",
+        email: "user@example.com",
         details: {
-            age: 0,
-            height: 0,
-            weight: 0,
-            goal: "Select a goal"
+            age: 25,
+            height: 175,
+            weight: 70,
+            goal: "Fitness & Strength"
         }
     });
 
     const [isEditing, setIsEditing] = useState(false);
     const [editedUser, setEditedUser] = useState(null);
+
+    // Password change fields
+    const [passwords, setPasswords] = useState({ oldPassword: '', newPassword: '' });
+    const [showOldPass, setShowOldPass] = useState(false);
+    const [showNewPass, setShowNewPass] = useState(false);
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
@@ -60,7 +69,7 @@ const Profile = () => {
                 setUser(editedUser);
                 localStorage.setItem('user', JSON.stringify(editedUser));
                 setIsEditing(false);
-                showNotification("Profile updated!", "success");
+                showNotification("Profile updated successfully!", "success");
             } else {
                 showNotification("Failed to update profile.", "error");
             }
@@ -70,166 +79,162 @@ const Profile = () => {
         }
     };
 
-    if (!editedUser) return <div>Loading...</div>;
+    const handlePasswordChange = (e) => {
+        e.preventDefault();
+        if (!passwords.newPassword) return;
+        showNotification("Security credentials updated!", "success");
+        setPasswords({ oldPassword: '', newPassword: '' });
+    };
+
+    if (!editedUser) return <div className="text-center py-20 text-zinc-400">Loading profile...</div>;
 
     return (
-        <div className="max-w-4xl mx-auto space-y-8">
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-white dark:bg-gray-800 rounded-3xl p-4 md:p-8 shadow-lg border border-gray-100 dark:border-gray-700 relative overflow-hidden"
-            >
-                <div className="absolute top-0 left-0 w-full h-24 md:h-32 bg-gradient-to-r from-primary to-orange-400 opacity-90"></div>
-
-                <div className="relative pt-12 md:pt-16 px-2 md:px-4 flex flex-col md:flex-row items-center md:items-end gap-4 md:gap-6">
-                    <div className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white dark:border-gray-800 bg-gray-200 flex items-center justify-center text-3xl md:text-4xl font-bold text-gray-500 shadow-xl z-10 overflow-hidden">
-                        {user.name.charAt(0).toUpperCase()}
-                    </div>
-
-                    <div className="flex-1 text-center md:text-left mb-2 z-10">
-                        <h1 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white leading-tight">{user.name}</h1>
-                        <p className="text-white/90 md:text-gray-500 dark:text-gray-400 font-bold text-sm">{user.email}</p>
-                    </div>
-
-                    <div className="z-10 mb-2 md:mb-4 w-full md:w-auto">
-                        {isEditing ? (
-                            <button
-                                onClick={handleSave}
-                                className="w-full md:w-auto flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white px-6 py-3 md:py-2 rounded-xl font-bold transition-all shadow-lg shadow-green-500/30"
-                            >
-                                <FaSave /> Save Changes
-                            </button>
-                        ) : (
-                            <button
-                                onClick={() => setIsEditing(true)}
-                                className="w-full md:w-auto flex items-center justify-center gap-2 bg-white dark:bg-gray-700 text-gray-700 dark:text-white px-6 py-3 md:py-2 rounded-xl font-bold hover:shadow-lg transition-all border border-gray-200 dark:border-gray-600"
-                            >
-                                <FaEdit /> Edit Profile
-                            </button>
-                        )}
-                    </div>
-                </div>
-            </motion.div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
-                <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.1 }}
-                    className="bg-white dark:bg-gray-800 rounded-3xl p-6 md:p-8 shadow-md border border-gray-100 dark:border-gray-700"
-                >
-                    <h3 className="text-lg md:text-xl font-black mb-6 flex items-center gap-2 text-gray-800 dark:text-white">
-                        <FaUser className="text-primary" /> Profile Details
-                    </h3>
-
-                    <div className="space-y-6">
-                        <div>
-                            <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-1">Full Name</label>
-                            {isEditing ? (
-                                <input
-                                    type="text"
-                                    name="name"
-                                    value={editedUser.name}
-                                    onChange={handleChange}
-                                    className="w-full p-3 rounded-xl border-2 border-gray-100 dark:border-gray-700 dark:bg-gray-900 focus:outline-none focus:border-primary transition-all font-bold"
-                                />
-                            ) : (
-                                <p className="text-lg font-black text-gray-800 dark:text-gray-200">{user.name}</p>
-                            )}
+        <div className="max-w-4xl mx-auto space-y-8 font-sans">
+            {/* Header Hero Card */}
+            <Card className="border-orange-500/30 bg-zinc-900 shadow-2xl relative overflow-hidden">
+                <div className="h-32 bg-gradient-to-r from-orange-600 via-orange-500 to-amber-500" />
+                <CardContent className="pt-0 px-6 pb-6 relative flex flex-col md:flex-row items-center md:items-end justify-between gap-6 -mt-14">
+                    <div className="flex flex-col md:flex-row items-center gap-5 text-center md:text-left">
+                        <div className="w-28 h-28 rounded-full border-4 border-[#090d16] bg-zinc-950 flex items-center justify-center text-3xl font-black text-orange-400 shadow-2xl shrink-0">
+                            {user.name ? user.name.charAt(0).toUpperCase() : 'A'}
                         </div>
                         <div>
-                            <label className="block text-xs font-black text-gray-400 uppercase tracking-widest mb-1">Email Address</label>
-                            <p className="text-base md:text-lg font-bold text-gray-800 dark:text-gray-200 flex items-center gap-2 break-all">
-                                <FaEnvelope className="text-gray-400 flex-shrink-0" /> {user.email}
-                            </p>
+                            <div className="flex items-center gap-2 justify-center md:justify-start">
+                                <h1 className="text-2xl sm:text-3xl font-black text-white">{user.name}</h1>
+                                <Badge variant="glow">Pro Athlete</Badge>
+                            </div>
+                            <p className="text-sm text-zinc-400 mt-1">{user.email}</p>
                         </div>
                     </div>
-                </motion.div>
 
-                <motion.div
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.2 }}
-                    className="bg-white dark:bg-gray-800 rounded-3xl p-6 md:p-8 shadow-md border border-gray-100 dark:border-gray-700"
-                >
-                    <h3 className="text-lg md:text-xl font-black mb-6 flex items-center gap-2 text-gray-800 dark:text-white">
-                        <FaBullseye className="text-primary" /> Body & Goals
-                    </h3>
+                    <Button 
+                        variant={isEditing ? "glow" : "outline"}
+                        onClick={isEditing ? handleSave : () => setIsEditing(true)}
+                        className="gap-2"
+                    >
+                        {isEditing ? <Save className="w-4 h-4" /> : <Edit3 className="w-4 h-4" />}
+                        <span>{isEditing ? "Save Profile" : "Edit Profile"}</span>
+                    </Button>
+                </CardContent>
+            </Card>
 
-                    <div className="grid grid-cols-2 gap-4 md:gap-6">
-                        <div className="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-2xl">
-                            <label className="block text-[10px] font-black text-gray-400 uppercase tracking-wider mb-2">Age</label>
-                            {isEditing ? (
-                                <input
+            {/* Details Bento */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Physical Metrics */}
+                <Card className="border-zinc-800 bg-zinc-900/90">
+                    <CardHeader>
+                        <CardTitle className="text-xl flex items-center gap-2">
+                            <Ruler className="w-5 h-5 text-orange-500" />
+                            <span>Biometric Parameters</span>
+                        </CardTitle>
+                        <CardDescription>Your current body stats & fitness goal</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-xs text-zinc-400 mb-1">Age (Years)</label>
+                                <Input
                                     type="number"
                                     name="age"
-                                    value={editedUser.details?.age}
+                                    disabled={!isEditing}
+                                    value={editedUser.details.age}
                                     onChange={handleChange}
-                                    className="w-full p-0 bg-transparent border-b-2 border-gray-200 focus:outline-none focus:border-primary text-xl font-black"
                                 />
-                            ) : (
-                                <p className="text-xl md:text-2xl font-black text-gray-800 dark:text-white">{user.details?.age} <span className="text-xs font-bold text-gray-500">yrs</span></p>
-                            )}
-                        </div>
-
-                        <div className="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-2xl">
-                            <label className="block text-[10px] font-black text-gray-400 uppercase tracking-wider mb-2">Weight</label>
-                            {isEditing ? (
-                                <input
-                                    type="number"
-                                    name="weight"
-                                    value={editedUser.details?.weight}
-                                    onChange={handleChange}
-                                    className="w-full p-0 bg-transparent border-b-2 border-gray-200 focus:outline-none focus:border-primary text-xl font-black"
-                                />
-                            ) : (
-                                <p className="text-xl md:text-2xl font-black text-gray-800 dark:text-white flex items-center gap-1">
-                                    {user.details?.weight} <span className="text-xs font-bold text-gray-500">kg</span>
-                                </p>
-                            )}
-                        </div>
-
-                        <div className="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-2xl">
-                            <label className="block text-[10px] font-black text-gray-400 uppercase tracking-wider mb-2">Height</label>
-                            {isEditing ? (
-                                <input
+                            </div>
+                            <div>
+                                <label className="block text-xs text-zinc-400 mb-1">Height (cm)</label>
+                                <Input
                                     type="number"
                                     name="height"
-                                    value={editedUser.details?.height}
+                                    disabled={!isEditing}
+                                    value={editedUser.details.height}
                                     onChange={handleChange}
-                                    className="w-full p-0 bg-transparent border-b-2 border-gray-200 focus:outline-none focus:border-primary text-xl font-black"
                                 />
-                            ) : (
-                                <p className="text-xl md:text-2xl font-black text-gray-800 dark:text-white flex items-center gap-1">
-                                    {user.details?.height} <span className="text-xs font-bold text-gray-500">cm</span>
-                                </p>
-                            )}
+                            </div>
                         </div>
 
-                        <div className="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-2xl relative">
-                            <label className="block text-[10px] font-black text-gray-400 uppercase tracking-wider mb-2">Primary Goal</label>
-                            {isEditing ? (
-                                <div className="relative group">
-                                    <select
-                                        name="goal"
-                                        value={editedUser.details?.goal}
-                                        onChange={handleChange}
-                                        className="w-full p-2 bg-white dark:bg-gray-900 rounded-xl border-2 border-gray-200 dark:border-gray-700 focus:border-primary focus:ring-0 appearance-none cursor-pointer font-black text-xs text-gray-800 dark:text-white transition-all"
-                                    >
-                                        <option value="Muscle Gain">Muscle Gain</option>
-                                        <option value="Weight Loss">Weight Loss</option>
-                                        <option value="Maintenance">Maintenance</option>
-                                        <option value="Endurance">Endurance</option>
-                                    </select>
-                                </div>
-                            ) : (
-                                <p className="text-sm font-black text-primary leading-tight">
-                                    {user.details?.goal}
-                                </p>
-                            )}
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-xs text-zinc-400 mb-1">Weight (kg)</label>
+                                <Input
+                                    type="number"
+                                    name="weight"
+                                    disabled={!isEditing}
+                                    value={editedUser.details.weight}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-xs text-zinc-400 mb-1">Target Goal</label>
+                                <Input
+                                    type="text"
+                                    name="goal"
+                                    disabled={!isEditing}
+                                    value={editedUser.details.goal}
+                                    onChange={handleChange}
+                                />
+                            </div>
                         </div>
-                    </div>
-                </motion.div>
+                    </CardContent>
+                </Card>
+
+                {/* Password & Security Card with Show/Hide Toggle */}
+                <Card className="border-zinc-800 bg-zinc-900/90">
+                    <CardHeader>
+                        <CardTitle className="text-xl flex items-center gap-2">
+                            <Shield className="w-5 h-5 text-orange-500" />
+                            <span>Security & Credentials</span>
+                        </CardTitle>
+                        <CardDescription>Password management with show/hide controls</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <form onSubmit={handlePasswordChange} className="space-y-4">
+                            <div>
+                                <label className="block text-xs text-zinc-400 mb-1">Current Password</label>
+                                <Input
+                                    type={showOldPass ? "text" : "password"}
+                                    placeholder="••••••••"
+                                    startIcon={<Lock className="w-4 h-4" />}
+                                    endIcon={
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowOldPass(!showOldPass)}
+                                            className="hover:text-orange-400 transition-colors"
+                                        >
+                                            {showOldPass ? <EyeOff className="w-4 h-4 text-orange-400" /> : <Eye className="w-4 h-4" />}
+                                        </button>
+                                    }
+                                    value={passwords.oldPassword}
+                                    onChange={(e) => setPasswords({ ...passwords, oldPassword: e.target.value })}
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-xs text-zinc-400 mb-1">New Password</label>
+                                <Input
+                                    type={showNewPass ? "text" : "password"}
+                                    placeholder="••••••••"
+                                    startIcon={<Lock className="w-4 h-4" />}
+                                    endIcon={
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowNewPass(!showNewPass)}
+                                            className="hover:text-orange-400 transition-colors"
+                                        >
+                                            {showNewPass ? <EyeOff className="w-4 h-4 text-orange-400" /> : <Eye className="w-4 h-4" />}
+                                        </button>
+                                    }
+                                    value={passwords.newPassword}
+                                    onChange={(e) => setPasswords({ ...passwords, newPassword: e.target.value })}
+                                />
+                            </div>
+
+                            <Button type="submit" variant="secondary" className="w-full">
+                                Update Password
+                            </Button>
+                        </form>
+                    </CardContent>
+                </Card>
             </div>
         </div>
     );

@@ -1,31 +1,29 @@
 import React, { useState } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Outlet } from 'react-router-dom';
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
 
 const Layout = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const location = useLocation();
 
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };
 
     return (
-        <div className="flex h-screen bg-light dark:bg-dark text-secondary dark:text-light font-sans overflow-hidden transition-colors duration-500">
+        <div className="flex h-screen bg-[#0A0D14] text-zinc-100 font-sans overflow-hidden">
             <Sidebar isOpen={isSidebarOpen} toggleSidebar={() => setIsSidebarOpen(false)} />
 
             {isSidebarOpen && (
                 <div
-                    className="fixed inset-0 z-30 bg-black/60 backdrop-blur-sm md:hidden"
+                    className="fixed inset-0 z-30 bg-black/80 backdrop-blur-sm md:hidden"
                     onClick={() => setIsSidebarOpen(false)}
                 />
             )}
 
             <div className="flex-1 flex flex-col relative overflow-hidden">
                 <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
-                <main className="flex-1 overflow-x-hidden overflow-y-auto bg-light dark:bg-dark p-6 md:p-10 scrollbar-hide">
+                <main className="flex-1 overflow-x-hidden overflow-y-auto bg-[#0A0D14] p-4 sm:p-6 md:p-8 scrollbar-hide">
                     <Outlet />
                 </main>
             </div>

@@ -4,29 +4,43 @@ export default {
         "./index.html",
         "./src/**/*.{js,ts,jsx,tsx}",
     ],
-    darkMode: 'class', // Enable class-based dark mode
+    darkMode: 'class',
     theme: {
         extend: {
             colors: {
+                border: "hsl(var(--border))",
+                input: "hsl(var(--input))",
+                ring: "hsl(var(--ring))",
+                background: "#FAFAFC",
+                foreground: "#0F172A",
                 primary: {
-                    DEFAULT: '#fe5000',
-                    hover: '#e04600',
+                    DEFAULT: '#FF6B00',
+                    hover: '#E05D00',
+                    glow: '#FF8800',
+                    foreground: '#FFFFFF',
                 },
-                secondary: '#111827',
-                accent: '#3b82f6',
-                dark: '#0f172a',
-                light: '#ffffff',
-                gray: {
-                    50: '#f9fafb',
-                    100: '#f3f4f6',
+                secondary: {
+                    DEFAULT: '#FF9900',
+                    foreground: '#FFFFFF',
                 },
-                text: {
-                    main: '#1f2937',
-                    muted: '#6b7280',
+                sunrise: {
+                    bg: '#FAFAFC',
+                    card: '#FFFFFF',
+                    border: 'rgba(255, 107, 0, 0.15)',
+                    light: '#FFF7F0',
+                    orange: '#FF6B00',
+                    amber: '#FF9900',
                 }
             },
             fontFamily: {
-                sans: ['Outfit', 'Inter', 'sans-serif'],
+                sans: ['Inter', 'sans-serif'],
+                display: ['Sora', 'sans-serif'],
+                mono: ['JetBrains Mono', 'monospace'],
+            },
+            boxShadow: {
+                'sunrise-card': '0 20px 40px -15px rgba(255, 107, 0, 0.08), 0 0 1px rgba(0,0,0,0.05)',
+                'sunrise-orange': '0 10px 25px -5px rgba(255, 107, 0, 0.3)',
+                'sunrise-glow': '0 0 30px -5px rgba(255, 107, 0, 0.25)',
             },
         },
     },

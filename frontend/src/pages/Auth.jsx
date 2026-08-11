@@ -1,43 +1,43 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
-import { FaSun, FaMoon } from 'react-icons/fa';
+import { motion } from 'framer-motion';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { Flame, Mail, Lock, User, Eye, EyeOff, ArrowRight, ShieldCheck, AlertCircle, Zap } from 'lucide-react';
 import API_URL from '../apiConfig';
+import { Button } from '../components/ui/button';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../components/ui/card';
+import { Input } from '../components/ui/input';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '../components/ui/tabs';
+import { Badge } from '../components/ui/badge';
 
 const Auth = () => {
     const navigate = useNavigate();
-    const [isLogin, setIsLogin] = useState(false);
+    const location = useLocation();
+
+    const searchParams = new URLSearchParams(location.search);
+    const initialMode = searchParams.get('mode') === 'signup' ? 'signup' : 'login';
+
+    const [authMode, setAuthMode] = useState(initialMode);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         password: '',
         confirmPassword: ''
     });
+
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
-    const [darkMode, setDarkMode] = useState(() => {
-        return localStorage.getItem('theme') === 'dark';
-    });
-
     useEffect(() => {
-        if (darkMode) {
-            document.documentElement.classList.add('dark');
-            localStorage.setItem('theme', 'dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-            localStorage.setItem('theme', 'light');
-        }
-    }, [darkMode]);
+        const mode = searchParams.get('mode') === 'signup' ? 'signup' : 'login';
+        setAuthMode(mode);
+    }, [location.search]);
 
-    const toggleTheme = () => {
-        setDarkMode(!darkMode);
-    };
-
-    const toggleMode = () => {
-        setIsLogin(!isLogin);
-        setFormData({ name: '', email: '', password: '', confirmPassword: '' });
+    const handleTabChange = (val) => {
+        setAuthMode(val);
         setError('');
+        setFormData({ name: '', email: '', password: '', confirmPassword: '' });
     };
 
     const handleChange = (e) => {
@@ -49,7 +49,7 @@ const Auth = () => {
         setError('');
         setLoading(true);
 
-        setLoading(true);
+        const isLogin = authMode === 'login';
 
         if (!isLogin && formData.password !== formData.confirmPassword) {
             setError("Passwords do not match");
@@ -81,7 +81,7 @@ const Auth = () => {
                     navigate('/dashboard');
                 }
             } else {
-                setError(data.error || "Authentication failed");
+                setError(data.error || "Authentication failed. Please check your credentials.");
             }
         } catch (error) {
             console.error("Auth Error:", error);
@@ -92,125 +92,166 @@ const Auth = () => {
     };
 
     return (
-        <div className="min-h-screen bg-light dark:bg-dark text-secondary dark:text-light flex items-center justify-center p-6 bg-gray-50 dark:bg-gray-900">
+        <div className="min-h-screen bg-[#FAFAFC] text-slate-800 flex items-center justify-center p-4 sm:p-6 relative overflow-hidden font-sans">
+            {/* Ambient Background Glow */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-orange-500/10 rounded-full blur-[160px] pointer-events-none -z-10" />
+
             <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3 }}
-                className="w-full max-w-md bg-white dark:bg-gray-800 rounded-3xl shadow-2xl p-8 border border-gray-200 dark:border-gray-700"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+                className="w-full max-w-md"
             >
-                <div className="flex justify-end mb-2">
-                    <button
-                        onClick={toggleTheme}
-                        className="p-2 rounded-full bg-gray-100 dark:bg-gray-700 text-yellow-500 dark:text-yellow-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-                    >
-                        {darkMode ? <FaSun /> : <FaMoon />}
-                    </button>
+                {/* Brand Header */}
+                <div 
+                    onClick={() => navigate('/')} 
+                    className="flex flex-col items-center gap-2 mb-8 cursor-pointer group"
+                >
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-orange-500 to-amber-400 flex items-center justify-center shadow-sunrise-orange group-hover:scale-105 transition-transform">
+                        <Flame className="w-7 h-7 text-white fill-white" />
+                    </div>
+                    <span className="text-3xl font-black text-slate-900 tracking-tight font-display">
+                        Fit<span className="text-orange-600">Genix</span>
+                    </span>
+                    <Badge variant="glow">SUNRISE ACCESS</Badge>
                 </div>
-                <h2 className="text-3xl font-bold text-center mb-6 text-primary">
-                    {isLogin ? 'Welcome Back!' : 'Join FitGenix'}
-                </h2>
 
-                {error && (
-                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-                        <span className="block sm:inline">{error}</span>
-                    </div>
-                )}
+                {/* Card */}
+                <Card className="sunrise-card-active border-2 border-orange-500 bg-white shadow-sunrise-card">
+                    <CardHeader className="text-center pb-4">
+                        <CardTitle className="text-2xl font-black text-slate-900 font-display uppercase tracking-wide">
+                            {authMode === 'login' ? 'WELCOME BACK' : 'CREATE ACCOUNT'}
+                        </CardTitle>
+                        <CardDescription className="font-mono text-slate-500">
+                            {authMode === 'login' 
+                                ? 'Sign in to access your neural fitness dashboard' 
+                                : 'Start your high-energy fitness transformation'}
+                        </CardDescription>
+                    </CardHeader>
 
-                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                    <AnimatePresence>
-                        {!isLogin && (
-                            <motion.div
-                                initial={{ opacity: 0, height: 0 }}
-                                animate={{ opacity: 1, height: 'auto' }}
-                                exit={{ opacity: 0, height: 0 }}
-                                className="overflow-hidden"
-                            >
-                                <label className="block text-sm font-medium mb-1">Full Name</label>
-                                <input
-                                    type="text"
-                                    name="name"
-                                    placeholder="John Doe"
-                                    className="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary"
-                                    value={formData.name}
-                                    onChange={handleChange}
-                                    required={!isLogin}
-                                />
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
+                    <CardContent className="space-y-4">
+                        <Tabs value={authMode} onValueChange={handleTabChange}>
+                            <TabsList className="grid grid-cols-2 mb-6 bg-slate-100 border border-slate-200">
+                                <TabsTrigger value="login" className="font-mono text-xs uppercase">Sign In</TabsTrigger>
+                                <TabsTrigger value="signup" className="font-mono text-xs uppercase">Sign Up</TabsTrigger>
+                            </TabsList>
 
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Email Address</label>
-                        <input
-                            type="email"
-                            name="email"
-                            placeholder="you@example.com"
-                            className="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary"
-                            value={formData.email}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
+                            {error && (
+                                <div className="bg-red-50 border border-red-200 text-red-600 p-3.5 rounded-xl flex items-center gap-2 text-xs font-mono mb-4">
+                                    <AlertCircle className="w-4 h-4 shrink-0" />
+                                    <span>{error}</span>
+                                </div>
+                            )}
 
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Password</label>
-                        <input
-                            type="password"
-                            name="password"
-                            placeholder="********"
-                            className="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary"
-                            value={formData.password}
-                            onChange={handleChange}
-                            required
-                        />
-                    </div>
+                            <form onSubmit={handleSubmit} className="space-y-4">
+                                <TabsContent value="signup" className="space-y-4 mt-0">
+                                    <div>
+                                        <label className="block text-xs font-mono uppercase text-slate-600 mb-1.5">Full Name</label>
+                                        <Input
+                                            type="text"
+                                            name="name"
+                                            placeholder="John Doe"
+                                            startIcon={<User className="w-4 h-4" />}
+                                            value={formData.name}
+                                            onChange={handleChange}
+                                            required={authMode === 'signup'}
+                                            className="bg-slate-50"
+                                        />
+                                    </div>
+                                </TabsContent>
 
-                    <AnimatePresence>
-                        {!isLogin && (
-                            <motion.div
-                                initial={{ opacity: 0, height: 0 }}
-                                animate={{ opacity: 1, height: 'auto' }}
-                                exit={{ opacity: 0, height: 0 }}
-                                className="overflow-hidden"
-                            >
-                                <label className="block text-sm font-medium mb-1">Confirm Password</label>
-                                <input
-                                    type="password"
-                                    name="confirmPassword"
-                                    placeholder="********"
-                                    className="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary"
-                                    value={formData.confirmPassword}
-                                    onChange={handleChange}
-                                    required={!isLogin}
-                                />
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
+                                <div>
+                                    <label className="block text-xs font-mono uppercase text-slate-600 mb-1.5">Email Address</label>
+                                    <Input
+                                        type="email"
+                                        name="email"
+                                        placeholder="you@example.com"
+                                        startIcon={<Mail className="w-4 h-4" />}
+                                        value={formData.email}
+                                        onChange={handleChange}
+                                        required
+                                        className="bg-slate-50"
+                                    />
+                                </div>
 
-                    <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        type="submit"
-                        disabled={loading}
-                        className="btn-primary w-full mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        {loading ? 'Processing...' : (isLogin ? 'Login' : 'Sign Up')}
-                    </motion.button>
-                </form>
+                                <div>
+                                    <label className="block text-xs font-mono uppercase text-slate-600 mb-1.5">Password</label>
+                                    <Input
+                                        type={showPassword ? "text" : "password"}
+                                        name="password"
+                                        placeholder="••••••••"
+                                        startIcon={<Lock className="w-4 h-4" />}
+                                        endIcon={
+                                            <button
+                                                type="button"
+                                                onClick={() => setShowPassword(!showPassword)}
+                                                className="focus:outline-none hover:text-orange-600 transition-colors p-1"
+                                                title={showPassword ? "Hide password" : "Show password"}
+                                            >
+                                                {showPassword ? (
+                                                    <EyeOff className="w-4 h-4 text-orange-600" />
+                                                ) : (
+                                                    <Eye className="w-4 h-4 text-slate-400" />
+                                                )}
+                                            </button>
+                                        }
+                                        value={formData.password}
+                                        onChange={handleChange}
+                                        required
+                                        className="bg-slate-50"
+                                    />
+                                </div>
 
-                <div className="mt-6 text-center text-sm">
-                    <p className="text-gray-500 dark:text-gray-400">
-                        {isLogin ? "Don't have an account?" : "Already registered?"}
-                        <button
-                            onClick={toggleMode}
-                            className="text-primary font-bold ml-1 hover:underline focus:outline-none"
-                        >
-                            {isLogin ? "Register here" : "Login"}
-                        </button>
-                    </p>
-                </div>
+                                <TabsContent value="signup" className="space-y-4 mt-0">
+                                    <div>
+                                        <label className="block text-xs font-mono uppercase text-slate-600 mb-1.5">Confirm Password</label>
+                                        <Input
+                                            type={showConfirmPassword ? "text" : "password"}
+                                            name="confirmPassword"
+                                            placeholder="••••••••"
+                                            startIcon={<Lock className="w-4 h-4" />}
+                                            endIcon={
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                                    className="focus:outline-none hover:text-orange-600 transition-colors p-1"
+                                                    title={showConfirmPassword ? "Hide password" : "Show password"}
+                                                >
+                                                    {showConfirmPassword ? (
+                                                        <EyeOff className="w-4 h-4 text-orange-600" />
+                                                    ) : (
+                                                        <Eye className="w-4 h-4 text-slate-400" />
+                                                    )}
+                                                </button>
+                                            }
+                                            value={formData.confirmPassword}
+                                            onChange={handleChange}
+                                            required={authMode === 'signup'}
+                                            className="bg-slate-50"
+                                        />
+                                    </div>
+                                </TabsContent>
+
+                                <Button
+                                    type="submit"
+                                    variant="glow"
+                                    disabled={loading}
+                                    className="w-full mt-2 gap-2 h-13 text-base font-black font-mono"
+                                >
+                                    <span>{loading ? 'AUTHENTICATING...' : (authMode === 'login' ? 'SIGN IN' : 'CREATE ACCOUNT')}</span>
+                                    <ArrowRight className="w-5 h-5" />
+                                </Button>
+                            </form>
+                        </Tabs>
+                    </CardContent>
+
+                    <CardFooter className="flex justify-center border-t border-slate-100 pt-4 text-xs font-mono text-slate-400">
+                        <div className="flex items-center gap-1.5">
+                            <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                            <span>256-bit Encrypted Security</span>
+                        </div>
+                    </CardFooter>
+                </Card>
             </motion.div>
         </div>
     );

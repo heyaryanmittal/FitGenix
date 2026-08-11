@@ -1,13 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaRocket, FaPaperPlane, FaTimes } from 'react-icons/fa';
+import { Brain, Send, X, Sparkles, Bot, Cpu } from 'lucide-react';
 import axios from 'axios';
 import API_URL from '../apiConfig';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
 
 const Chatbot = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState([
-        { role: 'assistant', text: "Hey! I'm FitGenix AI. 🚀 I'm here to help you crushed your fitness goals. What can I do for you today?" }
+        { role: 'assistant', text: "Neural link established. I'm FitGenix Cyber Coach. 🦾 Query me for telemetry adjustments, meal macros, or workout execution!" }
     ]);
     const [input, setInput] = useState("");
     const [loading, setLoading] = useState(false);
@@ -38,7 +40,7 @@ const Chatbot = () => {
             setMessages(prev => [...prev, aiMessage]);
         } catch (error) {
             console.error("Error sending message:", error);
-            setMessages(prev => [...prev, { role: 'assistant', text: "Sorry, I'm having trouble connecting to my brain right now. Please try again later." }]);
+            setMessages(prev => [...prev, { role: 'assistant', text: "Sorry, I'm having trouble connecting to my neural AI core right now. Please try again." }]);
         } finally {
             setLoading(false);
         }
@@ -49,37 +51,51 @@ const Chatbot = () => {
             <motion.button
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
-                className="fixed bottom-6 right-6 bg-primary text-white p-4 rounded-full shadow-lg z-50 flex items-center justify-center text-2xl"
+                className="fixed bottom-6 right-6 bg-gradient-to-r from-orange-600 via-primary to-cyan-400 text-white p-3.5 rounded-2xl shadow-copper-glow z-50 flex items-center justify-center border border-orange-400/50"
                 onClick={toggleChat}
             >
-                {isOpen ? <FaTimes /> : <FaRocket />}
+                {isOpen ? <X className="w-6 h-6" /> : <Brain className="w-6 h-6" />}
             </motion.button>
 
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
-                        initial={{ opacity: 0, y: 100, scale: 0.8 }}
+                        initial={{ opacity: 0, y: 50, scale: 0.9 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 100, scale: 0.8 }}
-                        transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                        className="fixed bottom-24 right-6 w-80 md:w-96 h-[500px] bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 z-50 flex flex-col overflow-hidden"
+                        exit={{ opacity: 0, y: 50, scale: 0.9 }}
+                        className="fixed bottom-22 right-6 w-80 sm:w-96 h-[520px] bg-[#0D1117] border-2 border-orange-500/40 rounded-2xl shadow-2xl z-50 flex flex-col overflow-hidden backdrop-blur-2xl"
                     >
-                        <div className="bg-primary p-4 text-white flex items-center gap-3">
-                            <FaRocket />
-                            <h3 className="font-bold">FitGenix AI</h3>
+                        {/* Header */}
+                        <div className="bg-gradient-to-r from-orange-600 via-primary to-cyan-500 p-4 text-white flex items-center justify-between">
+                            <div className="flex items-center gap-2.5">
+                                <div className="w-8 h-8 rounded-lg bg-black/30 flex items-center justify-center border border-white/20">
+                                    <Bot className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <h3 className="font-bold text-sm leading-none font-display uppercase tracking-wide">FitGenix Cyber Coach</h3>
+                                    <p className="text-[10px] text-white/90 mt-0.5 flex items-center gap-1 font-mono">
+                                        <Cpu className="w-3 h-3 text-cyan-300 animate-pulse" /> Telemetry Active
+                                    </p>
+                                </div>
+                            </div>
+                            <button onClick={toggleChat} className="text-white/80 hover:text-white">
+                                <X className="w-5 h-5" />
+                            </button>
                         </div>
 
-                        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 dark:bg-gray-900">
+                        {/* Messages */}
+                        <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-[#05070B]">
                             {messages.map((msg, index) => (
                                 <div
                                     key={index}
                                     className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                                 >
                                     <div
-                                        className={`max-w-[80%] p-3 rounded-2xl text-sm ${msg.role === 'user'
-                                            ? 'bg-primary text-white rounded-br-none'
-                                            : 'bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-gray-600 rounded-bl-none'
-                                            }`}
+                                        className={`max-w-[85%] p-3 rounded-2xl text-xs font-medium leading-relaxed font-sans ${
+                                            msg.role === 'user'
+                                                ? 'bg-gradient-to-r from-orange-600 to-amber-500 text-white rounded-br-none shadow-copper-glow-sm'
+                                                : 'bg-[#0D1117] text-zinc-100 border border-zinc-800 rounded-bl-none font-mono'
+                                        }`}
                                     >
                                         {msg.text}
                                     </div>
@@ -87,43 +103,27 @@ const Chatbot = () => {
                             ))}
                             {loading && (
                                 <div className="flex justify-start">
-                                    <div className="bg-white dark:bg-gray-700 p-3 rounded-2xl rounded-bl-none border border-gray-200 dark:border-gray-600 flex gap-1">
-                                        <motion.div
-                                            animate={{ y: [0, -5, 0] }}
-                                            transition={{ repeat: Infinity, duration: 0.6 }}
-                                            className="w-2 h-2 bg-gray-400 rounded-full"
-                                        />
-                                        <motion.div
-                                            animate={{ y: [0, -5, 0] }}
-                                            transition={{ repeat: Infinity, duration: 0.6, delay: 0.2 }}
-                                            className="w-2 h-2 bg-gray-400 rounded-full"
-                                        />
-                                        <motion.div
-                                            animate={{ y: [0, -5, 0] }}
-                                            transition={{ repeat: Infinity, duration: 0.6, delay: 0.4 }}
-                                            className="w-2 h-2 bg-gray-400 rounded-full"
-                                        />
+                                    <div className="bg-[#0D1117] p-3 rounded-2xl rounded-bl-none border border-zinc-800 flex items-center gap-1.5 text-xs text-cyan-400 font-mono">
+                                        <Sparkles className="w-4 h-4 animate-spin" />
+                                        <span>Analyzing telemetry response...</span>
                                     </div>
                                 </div>
                             )}
                             <div ref={messagesEndRef} />
                         </div>
 
-                        <form onSubmit={handleSend} className="p-3 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 flex gap-2">
-                            <input
+                        {/* Form Input */}
+                        <form onSubmit={handleSend} className="p-3 bg-[#0D1117] border-t border-zinc-800 flex gap-2">
+                            <Input
                                 type="text"
+                                placeholder="Query Cyber Core..."
                                 value={input}
                                 onChange={(e) => setInput(e.target.value)}
-                                placeholder="Ask about fitness..."
-                                className="flex-1 p-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-1 focus:ring-primary"
+                                className="h-10 text-xs bg-[#05070B] font-mono"
                             />
-                            <button
-                                type="submit"
-                                disabled={!input.trim() || loading}
-                                className="p-2 bg-primary text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-orange-600 transition-colors"
-                            >
-                                <FaPaperPlane />
-                            </button>
+                            <Button type="submit" variant="glow" size="sm" className="h-10 w-10 p-0 shrink-0">
+                                <Send className="w-4 h-4" />
+                            </Button>
                         </form>
                     </motion.div>
                 )}

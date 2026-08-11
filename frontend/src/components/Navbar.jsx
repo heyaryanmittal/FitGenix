@@ -1,29 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { FaSun, FaMoon, FaUserCircle, FaSignOutAlt, FaBars, FaTimes } from 'react-icons/fa';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Flame, LogOut, User, Menu, X, Cpu } from 'lucide-react';
+import { Button } from './ui/button';
 
 const Navbar = ({ toggleSidebar, isSidebarOpen }) => {
     const navigate = useNavigate();
-    const [darkMode, setDarkMode] = useState(() => localStorage.getItem('theme') === 'dark');
-    const [user, setUser] = useState(() => {
+    const [user] = useState(() => {
         const stored = localStorage.getItem('user');
         return stored ? JSON.parse(stored) : null;
     });
-
-    useEffect(() => {
-        if (darkMode) {
-            document.documentElement.classList.add('dark');
-            localStorage.setItem('theme', 'dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-            localStorage.setItem('theme', 'light');
-        }
-    }, [darkMode]);
-
-    const toggleTheme = () => {
-        setDarkMode(!darkMode);
-    };
 
     const handleLogout = () => {
         localStorage.removeItem('token');
@@ -32,53 +17,58 @@ const Navbar = ({ toggleSidebar, isSidebarOpen }) => {
     };
 
     return (
-        <nav className="sticky top-0 w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 px-4 md:px-6 py-4 flex justify-between items-center z-30 shadow-sm transition-colors duration-300">
+        <nav className="sticky top-0 w-full bg-[#0A0D14]/90 backdrop-blur-2xl border-b border-orange-500/30 px-4 md:px-8 py-3 flex justify-between items-center z-30 shadow-2xl">
             <div className="flex items-center gap-3">
                 <button
                     onClick={toggleSidebar}
-                    className="md:hidden p-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 active:scale-90 transition-transform"
+                    className="md:hidden p-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white active:scale-95 transition-transform"
                 >
-                    {isSidebarOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
+                    {isSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
                 </button>
-                <h1 className="text-xl md:2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-primary to-orange-500 cursor-pointer tracking-tight" onClick={() => navigate('/dashboard')}>
-                    FitGenix
-                </h1>
+                <div 
+                    onClick={() => navigate('/dashboard')}
+                    className="flex items-center gap-2 cursor-pointer group"
+                >
+                    <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-orange-600 via-primary to-cyan-400 flex items-center justify-center shadow-copper-glow group-hover:scale-105 transition-transform">
+                        <Flame className="w-5 h-5 text-white fill-white" />
+                    </div>
+                    <span className="text-xl md:text-2xl font-black tracking-tight text-white font-display">
+                        Fit<span className="text-primary copper-glow-text">Genix</span>
+                    </span>
+                </div>
             </div>
 
-            <div className="flex items-center gap-3 md:gap-6">
+            <div className="flex items-center gap-3 md:gap-5 font-mono">
                 {user && (
-                    <span className="hidden md:block font-medium text-gray-700 dark:text-gray-300">
-                        Welcome, <span className="text-primary font-bold">{user.name}</span>
-                    </span>
+                    <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#05070B] border border-orange-500/30">
+                        <div className="w-6 h-6 rounded-full bg-orange-500/20 border border-orange-500/50 flex items-center justify-center font-bold text-xs text-orange-400">
+                            {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                        </div>
+                        <span className="text-xs font-semibold text-zinc-300">
+                            <span className="text-orange-400">{user.name}</span>
+                        </span>
+                    </div>
                 )}
 
-                <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
-                    onClick={toggleTheme}
-                    className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-yellow-500 dark:text-yellow-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => navigate('/dashboard/profile')}
+                    className="gap-2 text-xs h-9 px-3"
                 >
-                    {darkMode ? <FaSun size={20} /> : <FaMoon size={20} />}
-                </motion.button>
+                    <User className="w-4 h-4 text-orange-400" />
+                    <span className="hidden sm:inline">Profile</span>
+                </Button>
 
-                <div className="relative group">
-                    <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        className="text-gray-600 dark:text-gray-300 hover:text-primary transition-colors"
-                        onClick={() => navigate('/dashboard/profile')}
-                    >
-                        <FaUserCircle size={28} />
-                    </motion.button>
-                </div>
-
-                <motion.button
-                    whileHover={{ scale: 1.1, color: '#FF4500' }}
+                <Button
+                    variant="ghost"
+                    size="sm"
                     onClick={handleLogout}
-                    className="text-gray-600 dark:text-gray-300 hover:text-red-500 transition-colors"
-                    title="Logout"
+                    title="Sign Out"
+                    className="h-9 w-9 p-0 text-zinc-400 hover:text-red-400 hover:bg-red-500/10"
                 >
-                    <FaSignOutAlt size={24} />
-                </motion.button>
+                    <LogOut className="w-4 h-4" />
+                </Button>
             </div>
         </nav>
     );
