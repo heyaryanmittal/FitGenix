@@ -43,10 +43,10 @@ Desktop.ini
 # Testing
 coverage/
 
-# Server specific
-server/.env
-server/node_modules/
+# Backend specific
+backend/.env
+backend/node_modules/
 
-# Client specific
-client/node_modules/
-client/dist/
+# Frontend specific
+frontend/node_modules/
+frontend/dist/

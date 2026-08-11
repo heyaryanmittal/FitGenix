@@ -49,20 +49,20 @@ git clone https://github.com/heyaryanmittal/FitGenix.git
 cd FitGenix
 
 # Install Frontend Dependencies
-cd client
+cd frontend
 npm install
 
 # Install Backend Dependencies
-cd ../server
+cd ../backend
 npm install
 ```
 
 ### 3. Environment Configuration
 
-Create a `.env` file in the `server` directory and add your credentials:
+Create a `.env` file in the `backend` directory and add your credentials:
 
 ```bash
-# server/.env
+# backend/.env
 PORT=5000
 MONGO_URI=your_mongodb_connection_string
 GROQ_API_KEY=your_groq_api_key
@@ -70,23 +70,23 @@ JWT_SECRET=your_jwt_signing_secret_key
 ```
 
 ```bash
-# client/.env
+# frontend/.env
 VITE_API_URL=Backend URL
 ```
 
 ### 4. Running Locally
 
-You will need to run both the client and the server simultaneously.
+You will need to run both the frontend and the backend simultaneously.
 
-**Start the Server:**
+**Start the Backend:**
 ```bash
-cd server
+cd backend
 npm run dev
 ```
 
-**Start the Client:**
+**Start the Frontend:**
 ```bash
-cd client
+cd frontend
 npm run dev
 ```
 
@@ -98,11 +98,11 @@ The application will be available at `http://localhost:5173`.
 
 ```text
 FitGenix/
-├── client/             # Frontend React application (Vite)
+├── frontend/           # Frontend React application (Vite)
 │   ├── src/            # Core logic, components, and pages
 │   ├── public/         # Static assets & user avatars
 │   └── tailwind.config.js
-├── server/             # Node.js Express backend
+├── backend/            # Node.js Express backend
 │   ├── index.js        # Main entry point & API routes
 │   └── .env            # Backend configuration
 ├── vercel.json         # Deployment configuration for Vercel
