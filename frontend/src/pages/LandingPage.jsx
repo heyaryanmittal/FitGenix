@@ -2,7 +2,6 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { 
-  Sun,
   Flame, 
   Brain, 
   Dumbbell, 
@@ -39,19 +38,10 @@ const LandingPage = () => {
         { label: "Form Accuracy", value: "98.8%", icon: <ShieldCheck className="w-4 h-4 text-orange-600" /> },
     ];
 
-    const reviews = [
-        { name: "Rahul Sharma", role: "Software Engineer", img: "/rahul_sharma.jpg", text: "FitGenix changed my life. The AI plans are so accurate, strictly followed the diet and lost 8kg in 2 months!" },
-        { name: "Priya Patel", role: "Marketing Head", img: "/priya_patell.jpg", text: "Finally an app that understands Indian diet! The macro breakdown for homemade food is a total game changer." },
-        { name: "Amit Verma", role: "Business Owner", img: "/amit_verma.jpg", text: "The adaptive workouts are perfect for my busy schedule. I can train at home or gym and get real results." },
-        { name: "Sneha Gupta", role: "College Student", img: "/sneha_gupta.jpg", text: "The AI Coach is like having a personal trainer 24/7. It helped me fix my posture and build strength safely." },
-        { name: "Vikram Reddy", role: "Fitness Enthusiast", img: "/vikram_reddy.jpg", text: "Best macro tracker I've used. It's fast, intuitive, and the AI suggestions for meals are actually delicious." },
-        { name: "Anjali Singh", role: "UX Designer", img: "/anjali_singh.jpg", text: "The UI is stunning and the user experience is seamless. It makes tracking my fitness journey feel effortless." }
-    ];
-
     return (
         <div className="min-h-screen bg-[#FAFAFC] text-slate-800 font-sans selection:bg-orange-500/20 selection:text-orange-600 relative overflow-hidden">
             
-            {/* Sunrise Ambient Glows */}
+            {/* Ambient Background Glows */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-orange-500/10 rounded-full blur-[160px] pointer-events-none -z-10" />
             <div className="absolute top-[800px] right-0 w-[500px] h-[500px] bg-amber-500/10 rounded-full blur-[180px] pointer-events-none -z-10" />
 
@@ -70,7 +60,6 @@ const LandingPage = () => {
                         <span className="text-2xl font-extrabold tracking-tight text-slate-900 font-display">
                             Fit<span className="text-orange-600">Genix</span>
                         </span>
-                        <Badge variant="glow" className="hidden sm:inline-flex">v2.0 SUNRISE</Badge>
                     </div>
 
                     {/* Nav Links */}
@@ -115,11 +104,6 @@ const LandingPage = () => {
                         transition={{ duration: 0.6 }}
                         className="lg:col-span-7 space-y-8"
                     >
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-orange-500/30 bg-orange-50 text-orange-600 text-xs font-mono font-bold tracking-wider">
-                            <Sun className="w-4 h-4 text-orange-600" />
-                            <span>SUNRISE KINETIC ARCHITECTURE</span>
-                        </div>
-
                         <h1 className="text-5xl sm:text-6xl xl:text-7xl font-black text-slate-900 tracking-tight font-display uppercase leading-[1.05]">
                             RISE & CONQUER <br />
                             <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500">
@@ -183,13 +167,12 @@ const LandingPage = () => {
                                                 FG
                                             </div>
                                             <div>
-                                                <h4 className="font-black text-slate-900 text-sm font-display">Neural Telemetry Companion</h4>
+                                                <h4 className="font-black text-slate-900 text-sm font-display">AI Fitness Companion</h4>
                                                 <p className="text-xs text-emerald-600 font-mono flex items-center gap-1">
                                                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> Active & Monitoring
                                                 </p>
                                             </div>
                                         </div>
-                                        <Badge variant="glow">LIVE</Badge>
                                     </div>
 
                                     {/* Calorie Ring Summary */}
@@ -242,7 +225,7 @@ const LandingPage = () => {
                         </div>
                         <span className="text-lg font-extrabold text-slate-900 font-display">FitGenix</span>
                     </div>
-                    <p>&copy; 2026 FitGenix Sunrise AI Ecosystem. All rights reserved.</p>
+                    <p>&copy; 2026 FitGenix AI. All rights reserved.</p>
                 </div>
             </footer>
         </div>

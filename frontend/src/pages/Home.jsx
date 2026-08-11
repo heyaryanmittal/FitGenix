@@ -148,9 +148,6 @@ const Home = () => {
                             <Badge className="bg-white/20 backdrop-blur-md text-white border-white/30 px-3 py-1 font-bold">
                                 🌅 MORNING STREAK: 15 DAYS
                             </Badge>
-                            <Badge className="hidden sm:inline-flex bg-white/20 backdrop-blur-md text-white border-white/30">
-                                PEAK WELLNESS TELEMETRY
-                            </Badge>
                         </div>
 
                         <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white font-display uppercase leading-tight">
@@ -243,7 +240,6 @@ const Home = () => {
                     <CardHeader className="pb-2">
                         <div className="flex justify-between items-center">
                             <CardDescription className="text-slate-500 font-mono uppercase font-bold">Daily Calorie Goal</CardDescription>
-                            <Badge variant="glow">SUNRISE</Badge>
                         </div>
                     </CardHeader>
                     <CardContent className="flex flex-col items-center justify-center py-4 space-y-3">
@@ -313,7 +309,7 @@ const Home = () => {
                 <Card className="sunrise-card">
                     <CardHeader className="pb-2">
                         <div className="flex justify-between items-center">
-                            <CardDescription className="text-slate-500 font-mono uppercase font-bold">Neural Health Score</CardDescription>
+                            <CardDescription className="text-slate-500 font-mono uppercase font-bold">Health Score</CardDescription>
                             <div className="w-8 h-8 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center">
                                 <Brain className="w-4 h-4" />
                             </div>

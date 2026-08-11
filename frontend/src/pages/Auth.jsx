@@ -113,7 +113,6 @@ const Auth = () => {
                     <span className="text-3xl font-black text-slate-900 tracking-tight font-display">
                         Fit<span className="text-orange-600">Genix</span>
                     </span>
-                    <Badge variant="glow">SUNRISE ACCESS</Badge>
                 </div>
 
                 {/* Card */}
@@ -124,7 +123,7 @@ const Auth = () => {
                         </CardTitle>
                         <CardDescription className="font-mono text-slate-500">
                             {authMode === 'login' 
-                                ? 'Sign in to access your neural fitness dashboard' 
+                                ? 'Sign in to access your fitness dashboard' 
                                 : 'Start your high-energy fitness transformation'}
                         </CardDescription>
                     </CardHeader>
