@@ -66,12 +66,16 @@ Create a `.env` file in the `backend` directory and add your credentials:
 PORT=5000
 MONGO_URI=your_mongodb_connection_string
 GROQ_API_KEY=your_groq_api_key
+GROQ_API_KEY_BACKUP1=your_backup_api_key_1  # optional
+GROQ_API_KEY_BACKUP2=your_backup_api_key_2  # optional
 JWT_SECRET=your_jwt_signing_secret_key
 ```
 
+Create a `.env` file in the `frontend` directory:
+
 ```bash
 # frontend/.env
-VITE_API_URL=Backend URL
+VITE_API_URL=http://localhost:5000
 ```
 
 ### 4. Running Locally
@@ -99,25 +103,52 @@ The application will be available at `http://localhost:5173`.
 ```text
 FitGenix/
 ├── frontend/           # Frontend React application (Vite)
-│   ├── src/            # Core logic, components, and pages
+│   ├── src/            # Components, pages, & API configuration
 │   ├── public/         # Static assets & user avatars
-│   └── tailwind.config.js
-├── backend/            # Node.js Express backend
-│   ├── index.js        # Main entry point & API routes
-│   └── .env            # Backend configuration
-├── vercel.json         # Deployment configuration for Vercel
+│   ├── vercel.json     # Vercel SPA rewrite rules
+│   └── package.json
+├── backend/            # Node.js Express backend API
+│   ├── index.js        # Main entry point, DB connection & API routes
+│   ├── vercel.json     # Vercel serverless routing
+│   └── package.json
+├── .gitignore          # Root Git ignore rules
 └── README.md           # Project documentation
 ```
 
 ---
 
-## ☁️ Deployment
+## ☁️ Separate Deployment on Vercel
 
-FitGenix is optimized for **Vercel**. The root `vercel.json` ensures both the frontend and backend leverage Vercel's serverless infrastructure seamlessly.
+FitGenix is designed for separate standalone deployments of the **`backend`** and **`frontend`** folders on Vercel.
 
-1. Connect your repository to Vercel.
-2. Add the environment variables (`MONGO_URI`, `GROQ_API_KEY`, etc.) in the Vercel Dashboard.
-3. Deploy! Vercel handles the API routing and static building automatically.
+### Step 1: Deploy Backend to Vercel
+
+1. Go to the [Vercel Dashboard](https://vercel.com/dashboard) and click **"Add New" > "Project"**.
+2. Import your GitHub repository (`heyaryanmittal/FitGenix`).
+3. In the project setup panel:
+   - **Project Name**: `fitgenix-backend` (or your preferred name)
+   - **Root Directory**: Click **Edit** and select **`backend`**.
+   - **Framework Preset**: Select **Other**.
+4. Expand **Environment Variables** and add:
+   - `MONGO_URI`: Your MongoDB Atlas connection string.
+   - `GROQ_API_KEY`: Your Groq API Key.
+   - `JWT_SECRET`: A secure random secret string for JWT authentication.
+5. Click **Deploy**.
+6. Once deployed, copy your Backend Vercel URL (e.g., `https://fitgenix-backend.vercel.app`).
+
+### Step 2: Deploy Frontend to Vercel
+
+1. Return to the Vercel Dashboard and click **"Add New" > "Project"**.
+2. Import the same GitHub repository (`heyaryanmittal/FitGenix`).
+3. In the project setup panel:
+   - **Project Name**: `fitgenix-frontend` (or your preferred name)
+   - **Root Directory**: Click **Edit** and select **`frontend`**.
+   - **Framework Preset**: Select **Vite** (detected automatically).
+   - **Build Command**: `npm run build`
+   - **Output Directory**: `dist`
+4. Expand **Environment Variables** and add:
+   - `VITE_API_URL`: Set to your deployed backend URL from Step 1 (e.g., `https://fitgenix-backend.vercel.app`).
+5. Click **Deploy**.
 
 ---
 

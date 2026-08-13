@@ -28,7 +28,7 @@ app.use(express.json());
 
 let isConnected = false;
 const connectDB = async () => {
-    if (isConnected) return;
+    if (isConnected && mongoose.connection.readyState === 1) return;
     try {
         if (!process.env.MONGO_URI) {
             throw new Error("MONGO_URI is missing from environment variables!");
