@@ -95,6 +95,9 @@ const Diet = () => {
                         {loading ? 'Analyzing...' : 'Analyze'}
                     </button>
                 </div>
+                {error && (
+                    <p className="text-red-500 text-xs mt-2 font-mono">{error}</p>
+                )}
             </form>
 
             <div className="max-w-4xl mx-auto">

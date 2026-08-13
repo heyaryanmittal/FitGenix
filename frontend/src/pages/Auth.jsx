@@ -30,7 +30,8 @@ const Auth = () => {
     const [error, setError] = useState('');
 
     useEffect(() => {
-        const mode = searchParams.get('mode') === 'signup' ? 'signup' : 'login';
+        const params = new URLSearchParams(location.search);
+        const mode = params.get('mode') === 'signup' ? 'signup' : 'login';
         setAuthMode(mode);
     }, [location.search]);
 

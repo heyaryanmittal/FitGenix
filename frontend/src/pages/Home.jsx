@@ -27,6 +27,12 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Badge } from '../components/ui/badge';
 import { Progress, CircularProgress } from '../components/ui/progress';
 import { Input } from '../components/ui/input';
+const QUOTES = [
+    { text: "Every morning brings new potential, but only effort converts it into reality.", author: "FitGenix AI Coach" },
+    { text: "Small daily improvements over time lead to stunning long-term results.", author: "Robin Sharma" },
+    { text: "Energy flows where attention goes. Focus on your strength.", author: "Tony Robbins" },
+    { text: "You don't have to be extreme, just consistent.", author: "FitGenix Coach" }
+];
 
 const Home = () => {
     const { showNotification } = useNotification();
@@ -43,21 +49,42 @@ const Home = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingGoal, setEditingGoal] = useState({ key: '', label: '', value: 0 });
 
-    const quotes = [
-        { text: "Every morning brings new potential, but only effort converts it into reality.", author: "FitGenix AI Coach" },
-        { text: "Small daily improvements over time lead to stunning long-term results.", author: "Robin Sharma" },
-        { text: "Energy flows where attention goes. Focus on your strength.", author: "Tony Robbins" },
-        { text: "You don't have to be extreme, just consistent.", author: "FitGenix Coach" }
-    ];
-
     const last7Days = Array.from({ length: 7 }).map((_, i) => {
         const d = new Date();
         d.setDate(d.getDate() - i);
         return d.toISOString().split('T')[0];
     }).reverse();
 
+    useEffect(() => {
+        const randomQuote = QUOTES[Math.floor(Math.random() * QUOTES.length)];
+        setQuote(randomQuote.text);
+        setAuthor(randomQuote.author);
+
+        let isMounted = true;
+        const loadDashboard = async () => {
+            setLoading(true);
+            try {
+                const token = localStorage.getItem('token');
+                const res = await fetch(`${API_URL}/api/dashboard?date=${selectedDate}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const result = await res.json();
+                if (result.success && isMounted) {
+                    setData(result.data);
+                    localStorage.setItem(`dashboard_cache_${selectedDate}`, JSON.stringify(result.data));
+                }
+            } catch (err) {
+                console.error('Fetch error:', err);
+            } finally {
+                if (isMounted) setLoading(false);
+            }
+        };
+
+        loadDashboard();
+        return () => { isMounted = false; };
+    }, [selectedDate]);
+
     const fetchData = async () => {
-        if (!data) setLoading(true);
         try {
             const token = localStorage.getItem('token');
             const res = await fetch(`${API_URL}/api/dashboard?date=${selectedDate}`, {
@@ -70,17 +97,8 @@ const Home = () => {
             }
         } catch (err) {
             console.error('Fetch error:', err);
-        } finally {
-            setLoading(false);
         }
     };
-
-    useEffect(() => {
-        const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
-        setQuote(randomQuote.text);
-        setAuthor(randomQuote.author);
-        fetchData();
-    }, [selectedDate]);
 
     const handleSaveGoal = async () => {
         try {
@@ -130,6 +148,14 @@ const Home = () => {
             showNotification('Error deleting item', 'error');
         }
     };
+
+    if (loading && !data) {
+        return (
+            <div className="flex items-center justify-center min-h-[400px]">
+                <div className="text-center font-mono text-slate-500">Loading dashboard data...</div>
+            </div>
+        );
+    }
 
     const isCalorieDanger = data && data.totalConsumed > (data.goals?.calories || 2000);
     const isProteinDanger = data && data.macros?.protein > (data.goals?.protein || 150);

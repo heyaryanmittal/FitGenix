@@ -245,14 +245,16 @@ const MealPlanner = () => {
     // Search / filter state
     const [search, setSearch] = useState('');
 
-    const token = localStorage.getItem('token');
-    const headers = { Authorization: `Bearer ${token}` };
+    const getHeaders = () => {
+        const token = localStorage.getItem('token');
+        return { Authorization: `Bearer ${token}` };
+    };
 
     // ── Load existing plan ─────────────────────────────────────────────────
     useEffect(() => {
         const fetchPlan = async () => {
             try {
-                const res = await axios.get(`${API_URL}/api/meal-plan`, { headers });
+                const res = await axios.get(`${API_URL}/api/meal-plan`, { headers: getHeaders() });
                 if (res.data.success && Object.keys(res.data.mealPlan || {}).length > 0) {
                     setPlan(normalizePlan(res.data.mealPlan));
                 }
@@ -269,9 +271,9 @@ const MealPlanner = () => {
     const savePlan = async () => {
         setIsSaving(true);
         try {
-            await axios.post(`${API_URL}/api/meal-plan/save`, { mealPlan: plan }, { headers });
+            await axios.post(`${API_URL}/api/meal-plan/save`, { mealPlan: plan }, { headers: getHeaders() });
             showNotification('Meal plan saved! ✅', 'success');
-        } catch (err) {
+        } catch {
             showNotification('Failed to save plan', 'error');
         } finally {
             setIsSaving(false);
@@ -291,7 +293,7 @@ const MealPlanner = () => {
                 days: 7,
                 startDay: 'monday'
             };
-            const res = await axios.post(`${API_URL}/api/meal-plan/generate`, payload, { headers });
+            const res = await axios.post(`${API_URL}/api/meal-plan/generate`, payload, { headers: getHeaders() });
             if (res.data.success) {
                 // Merge new generation into existing plan
                 const newPart = normalizePlan(res.data.mealPlan);
@@ -315,7 +317,7 @@ const MealPlanner = () => {
                 foodItem,
                 dietType: genForm.dietType,
                 allergies: genForm.allergies
-            }, { headers });
+            }, { headers: getHeaders() });
 
             if (res.data.success) {
                 setPlan(prev => {
@@ -325,7 +327,7 @@ const MealPlanner = () => {
                 });
                 showNotification('Ingredient flexibility enabled! Swapped with alternative. 🔄', 'success');
             }
-        } catch (err) {
+        } catch {
             showNotification('Could not suggest alternative', 'error');
         }
     };
