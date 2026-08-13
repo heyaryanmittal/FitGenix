@@ -207,7 +207,7 @@ const LandingPage = () => {
             <div className="absolute top-[800px] right-0 w-[500px] h-[500px] bg-amber-500/10 rounded-full blur-[180px] pointer-events-none -z-10" />
 
             {/* ── TOP NAVBAR ── */}
-            <header className="sticky top-0 z-50 w-full border-b border-orange-500/15 bg-white/85 backdrop-blur-xl">
+            <header className="fixed top-0 left-0 right-0 z-50 w-full border-b border-orange-500/15 bg-white/90 backdrop-blur-xl shadow-sm">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
                     
                     {/* Brand */}
@@ -226,9 +226,9 @@ const LandingPage = () => {
                     {/* Nav Links */}
                     <nav className="hidden md:flex items-center gap-8 text-xs font-mono tracking-wider font-bold text-slate-600 uppercase">
                         <a href="#features" className="hover:text-orange-600 transition-colors">Features</a>
+                        <a href="#ai-coach" className="hover:text-orange-600 transition-colors">AI Coach</a>
                         <a href="#pricing" className="hover:text-orange-600 transition-colors">Pricing</a>
                         <a href="#reviews" className="hover:text-orange-600 transition-colors">Reviews</a>
-                        <a href="#ai-coach" className="hover:text-orange-600 transition-colors">AI Coach</a>
                     </nav>
 
                     {/* Action Buttons */}
@@ -255,7 +255,7 @@ const LandingPage = () => {
             </header>
 
             {/* ── HERO SECTION ── */}
-            <section className="relative pt-12 pb-20 lg:pt-20 lg:pb-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+            <section className="relative pt-28 pb-20 lg:pt-36 lg:pb-28 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
                     
                     {/* Hero Left Content */}
@@ -418,6 +418,136 @@ const LandingPage = () => {
                             </p>
                         </div>
                     ))}
+                </div>
+            </section>
+
+            {/* ── DEDICATED AI COACH SECTION ── */}
+            <section id="ai-coach" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-200/80 relative">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                    
+                    {/* Left Column: AI Coach Overview & Features */}
+                    <div className="lg:col-span-6 space-y-6">
+                        <h2 className="text-3xl sm:text-5xl font-black text-slate-900 font-display uppercase tracking-tight leading-tight">
+                            MEET YOUR 24/7 <br />
+                            <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500">
+                                PERSONAL FITNESS COACH
+                            </span>
+                        </h2>
+
+                        <p className="text-base text-slate-600 font-medium leading-relaxed">
+                            Have questions about your workout split, macro targets, or exercise form? FitGenix AI Coach provides instant, evidence-based guidance tailored directly to your live training telemetry.
+                        </p>
+
+                        <div className="space-y-4 pt-2">
+                            <div className="flex items-start gap-4 p-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm">
+                                <div className="w-10 h-10 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center shrink-0 font-black">
+                                    <Brain className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <h4 className="font-extrabold text-slate-900 text-sm font-display">Instant Form & Technique Fixes</h4>
+                                    <p className="text-xs text-slate-600 font-medium mt-0.5">Ask how to optimize joint angles, grip positioning, or range of motion for any exercise.</p>
+                                </div>
+                            </div>
+
+                            <div className="flex items-start gap-4 p-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm">
+                                <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 font-black">
+                                    <Utensils className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <h4 className="font-extrabold text-slate-900 text-sm font-display">Smart Macro & Meal Adjustments</h4>
+                                    <p className="text-xs text-slate-600 font-medium mt-0.5">Need a high-protein post-workout meal alternative? Get instant customized recipe recommendations.</p>
+                                </div>
+                            </div>
+
+                            <div className="flex items-start gap-4 p-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm">
+                                <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 font-black">
+                                    <Activity className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <h4 className="font-extrabold text-slate-900 text-sm font-display">Personalized Recovery & Mobility</h4>
+                                    <p className="text-xs text-slate-600 font-medium mt-0.5">Get active recovery drills and stretching routines based on muscle fatigue tracking.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="pt-2">
+                            <Button 
+                                size="lg" 
+                                variant="glow" 
+                                onClick={() => handleAuth('signup')}
+                                className="gap-2 font-mono font-black"
+                            >
+                                <span>CHAT WITH AI COACH FREE</span>
+                                <ArrowRight className="w-5 h-5" />
+                            </Button>
+                        </div>
+                    </div>
+
+                    {/* Right Column: Live Mock Chat Interface Card */}
+                    <div className="lg:col-span-6">
+                        <div className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-orange-500 shadow-2xl shadow-orange-500/10 space-y-6 relative overflow-hidden">
+                            {/* Ambient Top Glow */}
+                            <div className="absolute top-0 right-0 w-48 h-48 bg-orange-500/10 rounded-full blur-3xl pointer-events-none" />
+
+                            {/* Chat Header */}
+                            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-orange-500 to-amber-400 flex items-center justify-center text-white font-black shadow-md">
+                                        <Brain className="w-6 h-6" />
+                                    </div>
+                                    <div>
+                                        <h4 className="font-black text-slate-900 text-base font-display">FitGenix AI Coach</h4>
+                                        <p className="text-xs text-emerald-600 font-mono flex items-center gap-1.5">
+                                            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> Always Online & Learning
+                                        </p>
+                                    </div>
+                                </div>
+                                <span className="px-3 py-1 rounded-full text-[10px] font-mono font-bold bg-slate-100 text-slate-600 border border-slate-200">
+                                    v2.4 Active
+                                </span>
+                            </div>
+
+                            {/* Conversation Messages */}
+                            <div className="space-y-4 text-xs font-medium">
+                                {/* User Message */}
+                                <div className="flex items-end justify-end gap-2">
+                                    <div className="bg-orange-600 text-white p-4 rounded-2xl rounded-br-none max-w-[85%] leading-relaxed shadow-sm">
+                                        Hey Coach! I felt extra fatigued after my heavy Deadlifts today. What should I adjust for my remaining sets?
+                                    </div>
+                                </div>
+
+                                {/* AI Response */}
+                                <div className="flex items-start gap-3">
+                                    <div className="w-8 h-8 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center shrink-0 font-bold font-mono text-xs">
+                                        AI
+                                    </div>
+                                    <div className="bg-slate-50 border border-slate-200/80 text-slate-800 p-4 rounded-2xl rounded-tl-none max-w-[88%] leading-relaxed space-y-2">
+                                        <p>
+                                            Great effort today! High nervous system fatigue is normal after heavy deadlifts. Here is your recommended adjustment:
+                                        </p>
+                                        <ul className="list-disc list-inside space-y-1 text-slate-700 font-mono text-[11px]">
+                                            <li>Reduce working load by 10% on remaining accessory lifts</li>
+                                            <li>Prioritize 35g protein + extra hydration post-workout</li>
+                                            <li>Perform 5 mins of hamstrings & lower back foam rolling</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Interactive Quick Action Chips */}
+                            <div className="pt-2 border-t border-slate-100">
+                                <p className="text-[11px] font-mono text-slate-400 font-bold mb-2 uppercase">Suggested Prompts</p>
+                                <div className="flex flex-wrap gap-2">
+                                    <span className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-orange-50 hover:text-orange-600 hover:border-orange-200 border border-slate-200 text-[11px] font-mono font-bold text-slate-600 cursor-pointer transition-all">
+                                        💡 Post-workout meal suggestion
+                                    </span>
+                                    <span className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-orange-50 hover:text-orange-600 hover:border-orange-200 border border-slate-200 text-[11px] font-mono font-bold text-slate-600 cursor-pointer transition-all">
+                                        🏋️ Fix Barbell Squat depth
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
