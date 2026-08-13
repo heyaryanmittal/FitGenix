@@ -32,10 +32,10 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     };
 
     return (
-        <aside className={`fixed inset-y-0 left-0 w-64 bg-white border-r border-orange-500/15 shadow-xl z-40 transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 md:translate-x-0 md:static p-5 flex flex-col h-full overflow-hidden`}>
+        <aside className={`fixed inset-y-0 left-0 w-64 bg-white dark:bg-[#0F172A] border-r border-slate-200 dark:border-slate-800/80 shadow-xl z-40 transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 md:translate-x-0 md:static p-5 flex flex-col h-full overflow-hidden`}>
             
             {/* Header */}
-            <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-100">
+            <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-100 dark:border-slate-800">
                 <div 
                     onClick={() => handleNavigation('/dashboard')} 
                     className="flex items-center gap-2.5 cursor-pointer select-none"
@@ -43,13 +43,13 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                     <div className="w-8 h-8 rounded-xl bg-orange-500 flex items-center justify-center text-white shadow-sunrise-orange">
                         <Flame className="w-5 h-5 fill-white" />
                     </div>
-                    <span className="text-xl font-black tracking-tight text-slate-900 font-display">
+                    <span className="text-xl font-black tracking-tight text-slate-900 dark:text-white font-display">
                         Fit<span className="text-orange-600">Genix</span>
                     </span>
                 </div>
                 <button
                     onClick={toggleSidebar}
-                    className="md:hidden p-1.5 rounded-lg bg-slate-100 text-slate-500 hover:text-slate-900"
+                    className="md:hidden p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
                 >
                     <X className="w-4 h-4" />
                 </button>
@@ -66,10 +66,10 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                             className={`w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-xs font-semibold transition-all ${
                                 isActive
                                     ? 'bg-orange-500 text-white shadow-sunrise-orange font-bold'
-                                    : 'text-slate-600 hover:bg-orange-50 hover:text-orange-600'
+                                    : 'text-slate-600 dark:text-slate-300 hover:bg-orange-50 dark:hover:bg-orange-500/10 hover:text-orange-600 dark:hover:text-orange-400'
                             }`}
                         >
-                            <span className={isActive ? "text-white" : "text-slate-500"}>
+                            <span className={isActive ? "text-white" : "text-slate-500 dark:text-slate-400"}>
                                 {item.icon}
                             </span>
                             <span className="tracking-wide">{item.name}</span>
@@ -79,10 +79,10 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             </nav>
 
             {/* Footer */}
-            <div className="pt-4 border-t border-slate-100">
-                <div className="bg-orange-50 rounded-xl p-3 border border-orange-100 text-center">
-                    <p className="text-[11px] font-semibold text-orange-700">FitGenix Engine</p>
-                    <p className="text-[10px] text-slate-400 mt-0.5">&copy; 2026 FitGenix AI</p>
+            <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
+                <div className="bg-orange-50 dark:bg-orange-500/10 rounded-xl p-3 border border-orange-100 dark:border-orange-500/20 text-center">
+                    <p className="text-[11px] font-semibold text-orange-700 dark:text-orange-400">FitGenix Engine</p>
+                    <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5">&copy; 2026 FitGenix AI</p>
                 </div>
             </div>
         </aside>

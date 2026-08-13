@@ -10,9 +10,9 @@ const buttonVariants = ({
   
   const variants = {
     default: "bg-primary text-white hover:bg-orange-600 shadow-sunrise-orange hover:shadow-sunrise-orange font-display tracking-wider",
-    outline: "border border-orange-500/30 bg-white text-slate-800 hover:border-primary hover:bg-orange-50 hover:text-primary shadow-sm",
-    secondary: "bg-slate-100 text-slate-800 hover:bg-slate-200 border border-slate-200",
-    ghost: "text-slate-600 hover:bg-orange-50 hover:text-primary",
+    outline: "border border-orange-500/30 dark:border-orange-500/40 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 hover:border-primary hover:bg-orange-50 dark:hover:bg-slate-800 hover:text-primary dark:hover:text-orange-400 shadow-sm",
+    secondary: "bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700",
+    ghost: "text-slate-600 dark:text-slate-300 hover:bg-orange-50 dark:hover:bg-slate-800 hover:text-primary dark:hover:text-orange-400",
     danger: "bg-red-500 text-white hover:bg-red-600 shadow-lg shadow-red-500/20",
     glow: "bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 text-white shadow-sunrise-orange hover:brightness-105 font-display tracking-wider font-extrabold",
   }

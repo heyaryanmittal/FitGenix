@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { 
   Sun,
+  Moon,
   Flame, 
   Brain, 
   Dumbbell, 
@@ -32,9 +33,11 @@ import { Button } from '../components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Input } from '../components/ui/input';
+import { useTheme } from '../context/ThemeContext';
 
 const LandingPage = () => {
     const navigate = useNavigate();
+    const { isDark, toggleTheme } = useTheme();
     const [emailInput, setEmailInput] = useState('');
     const [subscribed, setSubscribed] = useState(false);
 
@@ -200,14 +203,14 @@ const LandingPage = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-[#FAFAFC] text-slate-800 font-sans selection:bg-orange-500/20 selection:text-orange-600 relative overflow-hidden">
+        <div className="min-h-screen bg-[#FAFAFC] dark:bg-[#0A0D14] text-slate-800 dark:text-slate-100 font-sans selection:bg-orange-500/20 selection:text-orange-600 relative overflow-hidden transition-colors duration-300">
             
             {/* Ambient Background Glows */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-orange-500/10 rounded-full blur-[160px] pointer-events-none -z-10" />
             <div className="absolute top-[800px] right-0 w-[500px] h-[500px] bg-amber-500/10 rounded-full blur-[180px] pointer-events-none -z-10" />
 
             {/* ── TOP NAVBAR ── */}
-            <header className="fixed top-0 left-0 right-0 z-50 w-full border-b border-orange-500/15 bg-white/90 backdrop-blur-xl shadow-sm">
+            <header className="fixed top-0 left-0 right-0 z-50 w-full border-b border-orange-500/15 dark:border-orange-500/30 bg-white/90 dark:bg-[#0A0D14]/90 backdrop-blur-xl shadow-sm dark:shadow-2xl transition-colors duration-300">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
                     
                     {/* Brand */}
@@ -218,21 +221,29 @@ const LandingPage = () => {
                         <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-orange-500 to-amber-400 flex items-center justify-center shadow-sunrise-orange group-hover:scale-105 transition-transform">
                             <Flame className="w-6 h-6 text-white fill-white" />
                         </div>
-                        <span className="text-2xl font-extrabold tracking-tight text-slate-900 font-display">
+                        <span className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white font-display">
                             Fit<span className="text-orange-600">Genix</span>
                         </span>
                     </div>
 
                     {/* Nav Links */}
-                    <nav className="hidden md:flex items-center gap-8 text-xs font-mono tracking-wider font-bold text-slate-600 uppercase">
-                        <a href="#features" className="hover:text-orange-600 transition-colors">Features</a>
-                        <a href="#ai-coach" className="hover:text-orange-600 transition-colors">AI Coach</a>
-                        <a href="#pricing" className="hover:text-orange-600 transition-colors">Pricing</a>
-                        <a href="#reviews" className="hover:text-orange-600 transition-colors">Reviews</a>
+                    <nav className="hidden md:flex items-center gap-8 text-xs font-mono tracking-wider font-bold text-slate-600 dark:text-slate-300 uppercase">
+                        <a href="#features" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Features</a>
+                        <a href="#ai-coach" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">AI Coach</a>
+                        <a href="#pricing" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Pricing</a>
+                        <a href="#reviews" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Reviews</a>
                     </nav>
 
                     {/* Action Buttons */}
                     <div className="flex items-center gap-3">
+                        <button
+                            onClick={toggleTheme}
+                            className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-amber-400 hover:scale-105 active:scale-95 transition-all shadow-sm"
+                            title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+                        >
+                            {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-700" />}
+                        </button>
+
                         <Button 
                             variant="outline" 
                             size="sm" 
@@ -378,15 +389,15 @@ const LandingPage = () => {
             </section>
 
             {/* ── FEATURES SECTION ── */}
-            <section id="features" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-200/80 relative">
+            <section id="features" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-200/80 dark:border-slate-800/80 relative">
                 {/* Ambient Background Glow */}
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-orange-500/5 rounded-full blur-[140px] pointer-events-none -z-10" />
 
                 <div className="text-center max-w-3xl mx-auto space-y-4 mb-16">
-                    <h2 className="text-3xl sm:text-5xl font-black text-slate-900 font-display uppercase tracking-tight">
+                    <h2 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white font-display uppercase tracking-tight">
                         ENGINEERED FOR <span className="text-orange-600">PEAK PERFORMANCE</span>
                     </h2>
-                    <p className="text-base text-slate-600 font-medium">
+                    <p className="text-base text-slate-600 dark:text-slate-400 font-medium">
                         Everything you need to plan, track, and master your fitness transformation in one intelligent platform.
                     </p>
                 </div>
@@ -395,7 +406,7 @@ const LandingPage = () => {
                     {features.map((feat, idx) => (
                         <div 
                             key={idx} 
-                            className="bg-white rounded-3xl p-7 border border-slate-200/80 hover:border-orange-300 shadow-sm hover:shadow-xl hover:shadow-orange-500/10 transition-all duration-300 group flex flex-col space-y-4 hover:-translate-y-1.5"
+                            className="bg-white dark:bg-slate-900/90 rounded-3xl p-7 border border-slate-200/80 dark:border-slate-800 hover:border-orange-300 dark:hover:border-orange-500/50 shadow-sm hover:shadow-xl hover:shadow-orange-500/10 transition-all duration-300 group flex flex-col space-y-4 hover:-translate-y-1.5"
                         >
                             {/* Logo + Category Header naturally alongside each other */}
                             <div className="flex items-center gap-3.5">
@@ -408,12 +419,12 @@ const LandingPage = () => {
                             </div>
 
                             {/* Title beneath header & logo */}
-                            <h3 className="text-xl font-extrabold text-slate-900 group-hover:text-orange-600 transition-colors font-display">
+                            <h3 className="text-xl font-extrabold text-slate-900 dark:text-white group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors font-display">
                                 {feat.title}
                             </h3>
 
                             {/* Description */}
-                            <p className="text-sm text-slate-600 font-medium leading-relaxed">
+                            <p className="text-sm text-slate-600 dark:text-slate-400 font-medium leading-relaxed">
                                 {feat.description}
                             </p>
                         </div>
@@ -422,50 +433,50 @@ const LandingPage = () => {
             </section>
 
             {/* ── DEDICATED AI COACH SECTION ── */}
-            <section id="ai-coach" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-200/80 relative">
+            <section id="ai-coach" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-200/80 dark:border-slate-800/80 relative">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
                     
                     {/* Left Column: AI Coach Overview & Features */}
                     <div className="lg:col-span-6 space-y-6">
-                        <h2 className="text-3xl sm:text-5xl font-black text-slate-900 font-display uppercase tracking-tight leading-tight">
+                        <h2 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white font-display uppercase tracking-tight leading-tight">
                             MEET YOUR 24/7 <br />
                             <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500">
                                 PERSONAL FITNESS COACH
                             </span>
                         </h2>
 
-                        <p className="text-base text-slate-600 font-medium leading-relaxed">
+                        <p className="text-base text-slate-600 dark:text-slate-300 font-medium leading-relaxed">
                             Have questions about your workout split, macro targets, or exercise form? FitGenix AI Coach provides instant, evidence-based guidance tailored directly to your live training telemetry.
                         </p>
 
                         <div className="space-y-4 pt-2">
-                            <div className="flex items-start gap-4 p-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm">
-                                <div className="w-10 h-10 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center shrink-0 font-black">
+                            <div className="flex items-start gap-4 p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm">
+                                <div className="w-10 h-10 rounded-xl bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 flex items-center justify-center shrink-0 font-black">
                                     <Brain className="w-5 h-5" />
                                 </div>
                                 <div>
-                                    <h4 className="font-extrabold text-slate-900 text-sm font-display">Instant Form & Technique Fixes</h4>
-                                    <p className="text-xs text-slate-600 font-medium mt-0.5">Ask how to optimize joint angles, grip positioning, or range of motion for any exercise.</p>
+                                    <h4 className="font-extrabold text-slate-900 dark:text-white text-sm font-display">Instant Form & Technique Fixes</h4>
+                                    <p className="text-xs text-slate-600 dark:text-slate-400 font-medium mt-0.5">Ask how to optimize joint angles, grip positioning, or range of motion for any exercise.</p>
                                 </div>
                             </div>
 
-                            <div className="flex items-start gap-4 p-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm">
-                                <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 font-black">
+                            <div className="flex items-start gap-4 p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm">
+                                <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 font-black">
                                     <Utensils className="w-5 h-5" />
                                 </div>
                                 <div>
-                                    <h4 className="font-extrabold text-slate-900 text-sm font-display">Smart Macro & Meal Adjustments</h4>
-                                    <p className="text-xs text-slate-600 font-medium mt-0.5">Need a high-protein post-workout meal alternative? Get instant customized recipe recommendations.</p>
+                                    <h4 className="font-extrabold text-slate-900 dark:text-white text-sm font-display">Smart Macro & Meal Adjustments</h4>
+                                    <p className="text-xs text-slate-600 dark:text-slate-400 font-medium mt-0.5">Need a high-protein post-workout meal alternative? Get instant customized recipe recommendations.</p>
                                 </div>
                             </div>
 
-                            <div className="flex items-start gap-4 p-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm">
-                                <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 font-black">
+                            <div className="flex items-start gap-4 p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm">
+                                <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 font-black">
                                     <Activity className="w-5 h-5" />
                                 </div>
                                 <div>
-                                    <h4 className="font-extrabold text-slate-900 text-sm font-display">Personalized Recovery & Mobility</h4>
-                                    <p className="text-xs text-slate-600 font-medium mt-0.5">Get active recovery drills and stretching routines based on muscle fatigue tracking.</p>
+                                    <h4 className="font-extrabold text-slate-900 dark:text-white text-sm font-display">Personalized Recovery & Mobility</h4>
+                                    <p className="text-xs text-slate-600 dark:text-slate-400 font-medium mt-0.5">Get active recovery drills and stretching routines based on muscle fatigue tracking.</p>
                                 </div>
                             </div>
                         </div>
@@ -485,24 +496,24 @@ const LandingPage = () => {
 
                     {/* Right Column: Live Mock Chat Interface Card */}
                     <div className="lg:col-span-6">
-                        <div className="bg-white rounded-3xl p-6 sm:p-8 border-2 border-orange-500 shadow-2xl shadow-orange-500/10 space-y-6 relative overflow-hidden">
+                        <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border-2 border-orange-500 shadow-2xl shadow-orange-500/10 space-y-6 relative overflow-hidden">
                             {/* Ambient Top Glow */}
                             <div className="absolute top-0 right-0 w-48 h-48 bg-orange-500/10 rounded-full blur-3xl pointer-events-none" />
 
                             {/* Chat Header */}
-                            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+                            <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
                                 <div className="flex items-center gap-3">
                                     <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-orange-500 to-amber-400 flex items-center justify-center text-white font-black shadow-md">
                                         <Brain className="w-6 h-6" />
                                     </div>
                                     <div>
-                                        <h4 className="font-black text-slate-900 text-base font-display">FitGenix AI Coach</h4>
-                                        <p className="text-xs text-emerald-600 font-mono flex items-center gap-1.5">
+                                        <h4 className="font-black text-slate-900 dark:text-white text-base font-display">FitGenix AI Coach</h4>
+                                        <p className="text-xs text-emerald-600 dark:text-emerald-400 font-mono flex items-center gap-1.5">
                                             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> Always Online & Learning
                                         </p>
                                     </div>
                                 </div>
-                                <span className="px-3 py-1 rounded-full text-[10px] font-mono font-bold bg-slate-100 text-slate-600 border border-slate-200">
+                                <span className="px-3 py-1 rounded-full text-[10px] font-mono font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
                                     v2.4 Active
                                 </span>
                             </div>
@@ -518,14 +529,14 @@ const LandingPage = () => {
 
                                 {/* AI Response */}
                                 <div className="flex items-start gap-3">
-                                    <div className="w-8 h-8 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center shrink-0 font-bold font-mono text-xs">
+                                    <div className="w-8 h-8 rounded-xl bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 flex items-center justify-center shrink-0 font-bold font-mono text-xs">
                                         AI
                                     </div>
-                                    <div className="bg-slate-50 border border-slate-200/80 text-slate-800 p-4 rounded-2xl rounded-tl-none max-w-[88%] leading-relaxed space-y-2">
+                                    <div className="bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700 text-slate-800 dark:text-slate-100 p-4 rounded-2xl rounded-tl-none max-w-[88%] leading-relaxed space-y-2">
                                         <p>
                                             Great effort today! High nervous system fatigue is normal after heavy deadlifts. Here is your recommended adjustment:
                                         </p>
-                                        <ul className="list-disc list-inside space-y-1 text-slate-700 font-mono text-[11px]">
+                                        <ul className="list-disc list-inside space-y-1 text-slate-700 dark:text-slate-300 font-mono text-[11px]">
                                             <li>Reduce working load by 10% on remaining accessory lifts</li>
                                             <li>Prioritize 35g protein + extra hydration post-workout</li>
                                             <li>Perform 5 mins of hamstrings & lower back foam rolling</li>
@@ -535,13 +546,13 @@ const LandingPage = () => {
                             </div>
 
                             {/* Interactive Quick Action Chips */}
-                            <div className="pt-2 border-t border-slate-100">
-                                <p className="text-[11px] font-mono text-slate-400 font-bold mb-2 uppercase">Suggested Prompts</p>
+                            <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
+                                <p className="text-[11px] font-mono text-slate-400 dark:text-slate-500 font-bold mb-2 uppercase">Suggested Prompts</p>
                                 <div className="flex flex-wrap gap-2">
-                                    <span className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-orange-50 hover:text-orange-600 hover:border-orange-200 border border-slate-200 text-[11px] font-mono font-bold text-slate-600 cursor-pointer transition-all">
+                                    <span className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-orange-50 dark:hover:bg-orange-500/10 hover:text-orange-600 dark:hover:text-orange-400 hover:border-orange-200 border border-slate-200 dark:border-slate-700 text-[11px] font-mono font-bold text-slate-600 dark:text-slate-300 cursor-pointer transition-all">
                                         💡 Post-workout meal suggestion
                                     </span>
-                                    <span className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-orange-50 hover:text-orange-600 hover:border-orange-200 border border-slate-200 text-[11px] font-mono font-bold text-slate-600 cursor-pointer transition-all">
+                                    <span className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-orange-50 dark:hover:bg-orange-500/10 hover:text-orange-600 dark:hover:text-orange-400 hover:border-orange-200 border border-slate-200 dark:border-slate-700 text-[11px] font-mono font-bold text-slate-600 dark:text-slate-300 cursor-pointer transition-all">
                                         🏋️ Fix Barbell Squat depth
                                     </span>
                                 </div>
@@ -552,12 +563,12 @@ const LandingPage = () => {
             </section>
 
             {/* ── PRICING SECTION ── */}
-            <section id="pricing" className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-200/80">
+            <section id="pricing" className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-200/80 dark:border-slate-800/80">
                 <div className="text-center max-w-3xl mx-auto space-y-4 mb-16">
-                    <h2 className="text-3xl sm:text-5xl font-black text-slate-900 font-display uppercase tracking-tight">
+                    <h2 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white font-display uppercase tracking-tight">
                         TRANSPARENT <span className="text-orange-600">PRICING PLANS</span>
                     </h2>
-                    <p className="text-base text-slate-600 font-medium">
+                    <p className="text-base text-slate-600 dark:text-slate-400 font-medium">
                         Select the perfect plan tailored to your training goals. Upgrade or cancel anytime.
                     </p>
                 </div>
@@ -580,18 +591,18 @@ const LandingPage = () => {
 
                             <div>
                                 <CardHeader className="space-y-2 pt-6">
-                                    <CardTitle className="text-2xl font-black text-slate-900 uppercase">{plan.name}</CardTitle>
-                                    <CardDescription>{plan.description}</CardDescription>
+                                    <CardTitle className="text-2xl font-black text-slate-900 dark:text-white uppercase">{plan.name}</CardTitle>
+                                    <CardDescription className="dark:text-slate-400">{plan.description}</CardDescription>
                                     <div className="pt-4 flex items-baseline gap-2">
-                                        <span className="text-4xl font-black text-slate-900 font-mono">{plan.price}</span>
-                                        <span className="text-sm font-semibold text-slate-500 font-mono">{plan.period}</span>
+                                        <span className="text-4xl font-black text-slate-900 dark:text-white font-mono">{plan.price}</span>
+                                        <span className="text-sm font-semibold text-slate-500 dark:text-slate-400 font-mono">{plan.period}</span>
                                     </div>
                                 </CardHeader>
 
-                                <CardContent className="space-y-3 pt-4 border-t border-slate-100">
+                                <CardContent className="space-y-3 pt-4 border-t border-slate-100 dark:border-slate-800">
                                     {plan.features.map((feat, i) => (
-                                        <div key={i} className="flex items-center gap-3 text-xs font-semibold text-slate-700">
-                                            <div className="w-5 h-5 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center shrink-0">
+                                        <div key={i} className="flex items-center gap-3 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                                            <div className="w-5 h-5 rounded-full bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 flex items-center justify-center shrink-0">
                                                 <Check className="w-3.5 h-3.5" />
                                             </div>
                                             <span>{feat}</span>
@@ -615,12 +626,12 @@ const LandingPage = () => {
             </section>
 
             {/* ── REVIEWS SECTION ── */}
-            <section id="reviews" className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-200/80">
+            <section id="reviews" className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-slate-200/80 dark:border-slate-800/80">
                 <div className="text-center max-w-3xl mx-auto space-y-4 mb-16">
-                    <h2 className="text-3xl sm:text-5xl font-black text-slate-900 font-display uppercase tracking-tight">
+                    <h2 className="text-3xl sm:text-5xl font-black text-slate-900 dark:text-white font-display uppercase tracking-tight">
                         ATHLETE <span className="text-orange-600">TESTIMONIALS</span>
                     </h2>
-                    <p className="text-base text-slate-600 font-medium">
+                    <p className="text-base text-slate-600 dark:text-slate-400 font-medium">
                         See how thousands of dedicated users transformed their body & energy output with FitGenix.
                     </p>
                 </div>
@@ -634,17 +645,17 @@ const LandingPage = () => {
                                         <Star key={i} className="w-4 h-4 fill-amber-400" />
                                     ))}
                                 </div>
-                                <p className="text-sm text-slate-700 italic leading-relaxed">
+                                <p className="text-sm text-slate-700 dark:text-slate-300 italic leading-relaxed">
                                     "{rev.text}"
                                 </p>
                             </div>
-                            <div className="pt-6 mt-6 border-t border-slate-100 flex items-center gap-3">
+                            <div className="pt-6 mt-6 border-t border-slate-100 dark:border-slate-800 flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-orange-500 to-amber-400 flex items-center justify-center font-black text-white text-sm font-mono">
                                     {rev.name.charAt(0)}
                                 </div>
                                 <div>
-                                    <h5 className="font-bold text-slate-900 text-sm font-display">{rev.name}</h5>
-                                    <p className="text-xs text-slate-500 font-mono">{rev.role}</p>
+                                    <h5 className="font-bold text-slate-900 dark:text-white text-sm font-display">{rev.name}</h5>
+                                    <p className="text-xs text-slate-500 dark:text-slate-400 font-mono">{rev.role}</p>
                                 </div>
                             </div>
                         </Card>
@@ -653,8 +664,8 @@ const LandingPage = () => {
             </section>
 
             {/* ── RICH FOOTER SECTION ── */}
-            <footer className="border-t border-slate-200 bg-white pt-16 pb-12 px-4 sm:px-6 lg:px-8">
-                <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-slate-100">
+            <footer className="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0A0D14] pt-16 pb-12 px-4 sm:px-6 lg:px-8 transition-colors duration-300">
+                <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-slate-100 dark:border-slate-800">
                     
                     {/* Brand Column */}
                     <div className="lg:col-span-2 space-y-4">
@@ -662,24 +673,24 @@ const LandingPage = () => {
                             <div className="w-10 h-10 rounded-xl bg-orange-500 flex items-center justify-center text-white shadow-sunrise-orange">
                                 <Flame className="w-6 h-6 fill-white" />
                             </div>
-                            <span className="text-2xl font-black text-slate-900 font-display">
+                            <span className="text-2xl font-black text-slate-900 dark:text-white font-display">
                                 Fit<span className="text-orange-600">Genix</span>
                             </span>
                         </div>
-                        <p className="text-sm text-slate-600 leading-relaxed max-w-sm">
+                        <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed max-w-sm">
                             FitGenix is your all-in-one AI fitness platform. Adaptive workout split generators, precision macro tracking, and 24/7 intelligent coaching.
                         </p>
                         
                         {/* Newsletter Subscribe */}
                         <form onSubmit={handleNewsletterSubmit} className="space-y-2 pt-2">
-                            <p className="text-xs font-mono font-bold text-slate-700 uppercase">Subscribe to AI Workout Tips</p>
+                            <p className="text-xs font-mono font-bold text-slate-700 dark:text-slate-300 uppercase">Subscribe to AI Workout Tips</p>
                             <div className="flex gap-2 max-w-sm">
                                 <Input 
                                     type="email" 
                                     placeholder="Enter your email" 
                                     value={emailInput}
                                     onChange={(e) => setEmailInput(e.target.value)}
-                                    className="bg-slate-50 text-xs"
+                                    className="bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white text-xs border-slate-200 dark:border-slate-800"
                                     required
                                 />
                                 <Button type="submit" variant="glow" size="sm" className="shrink-0 font-mono text-xs">
@@ -687,51 +698,51 @@ const LandingPage = () => {
                                 </Button>
                             </div>
                             {subscribed && (
-                                <p className="text-xs text-emerald-600 font-mono">✓ Thank you for subscribing!</p>
+                                <p className="text-xs text-emerald-600 dark:text-emerald-400 font-mono">✓ Thank you for subscribing!</p>
                             )}
                         </form>
                     </div>
 
                     {/* Product Links */}
                     <div className="space-y-3 font-mono text-xs">
-                        <h5 className="font-bold text-slate-900 uppercase tracking-wider text-sm">Product</h5>
-                        <ul className="space-y-2.5 text-slate-600">
-                            <li><a href="#features" className="hover:text-orange-600 transition-colors">AI Workout Generator</a></li>
-                            <li><a href="#features" className="hover:text-orange-600 transition-colors">Smart Macro Tracker</a></li>
-                            <li><a href="#features" className="hover:text-orange-600 transition-colors">7-Day Meal Planner</a></li>
-                            <li><a href="#features" className="hover:text-orange-600 transition-colors">24/7 AI Coach</a></li>
-                            <li><a href="#pricing" className="hover:text-orange-600 transition-colors">Pricing Plans</a></li>
+                        <h5 className="font-bold text-slate-900 dark:text-white uppercase tracking-wider text-sm">Product</h5>
+                        <ul className="space-y-2.5 text-slate-600 dark:text-slate-400">
+                            <li><a href="#features" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">AI Workout Generator</a></li>
+                            <li><a href="#features" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Smart Macro Tracker</a></li>
+                            <li><a href="#features" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">7-Day Meal Planner</a></li>
+                            <li><a href="#features" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">24/7 AI Coach</a></li>
+                            <li><a href="#pricing" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Pricing Plans</a></li>
                         </ul>
                     </div>
 
                     {/* Company Links */}
                     <div className="space-y-3 font-mono text-xs">
-                        <h5 className="font-bold text-slate-900 uppercase tracking-wider text-sm">Company</h5>
-                        <ul className="space-y-2.5 text-slate-600">
-                            <li><a href="#reviews" className="hover:text-orange-600 transition-colors">About FitGenix</a></li>
-                            <li><a href="#reviews" className="hover:text-orange-600 transition-colors">Athlete Reviews</a></li>
-                            <li><a href="#reviews" className="hover:text-orange-600 transition-colors">Careers</a></li>
-                            <li><a href="#reviews" className="hover:text-orange-600 transition-colors">Press & Media</a></li>
+                        <h5 className="font-bold text-slate-900 dark:text-white uppercase tracking-wider text-sm">Company</h5>
+                        <ul className="space-y-2.5 text-slate-600 dark:text-slate-400">
+                            <li><a href="#reviews" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">About FitGenix</a></li>
+                            <li><a href="#reviews" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Athlete Reviews</a></li>
+                            <li><a href="#reviews" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Careers</a></li>
+                            <li><a href="#reviews" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Press & Media</a></li>
                         </ul>
                     </div>
 
                     {/* Legal & Support */}
                     <div className="space-y-3 font-mono text-xs">
-                        <h5 className="font-bold text-slate-900 uppercase tracking-wider text-sm">Support & Legal</h5>
-                        <ul className="space-y-2.5 text-slate-600">
-                            <li><a href="#" className="hover:text-orange-600 transition-colors">Help Center</a></li>
-                            <li><a href="#" className="hover:text-orange-600 transition-colors">Privacy Policy</a></li>
-                            <li><a href="#" className="hover:text-orange-600 transition-colors">Terms of Service</a></li>
-                            <li><a href="#" className="hover:text-orange-600 transition-colors">Security Overview</a></li>
+                        <h5 className="font-bold text-slate-900 dark:text-white uppercase tracking-wider text-sm">Support & Legal</h5>
+                        <ul className="space-y-2.5 text-slate-600 dark:text-slate-400">
+                            <li><a href="#" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Help Center</a></li>
+                            <li><a href="#" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Privacy Policy</a></li>
+                            <li><a href="#" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Terms of Service</a></li>
+                            <li><a href="#" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Security Overview</a></li>
                         </ul>
                     </div>
                 </div>
 
-                <div className="max-w-7xl mx-auto pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500 font-mono">
+                <div className="max-w-7xl mx-auto pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400 font-mono">
                     <p>&copy; 2026 FitGenix AI Inc. All rights reserved.</p>
                     <div className="flex items-center gap-6">
-                        <a href="#" className="hover:text-orange-600 transition-colors">Privacy</a>
-                        <a href="#" className="hover:text-orange-600 transition-colors">Terms</a>
+                        <a href="#" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Privacy</a>
+                        <a href="#" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Terms</a>
                         <a href="#" className="hover:text-orange-600 transition-colors">Security</a>
                     </div>
                 </div>

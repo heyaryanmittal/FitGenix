@@ -16,29 +16,32 @@ import Profile from './pages/Profile';
 import Chatbot from './components/Chatbot';
 
 import { NotificationProvider } from './context/NotificationContext';
+import { ThemeProvider } from './context/ThemeContext';
 
 function App() {
   return (
-    <NotificationProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/user-details" element={<Onboarding />} />
+    <ThemeProvider>
+      <NotificationProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/user-details" element={<Onboarding />} />
 
-          <Route element={<Layout />}>
-            <Route path="/dashboard" element={<Home />} />
-            <Route path="/dashboard/profile" element={<Profile />} />
-            <Route path="/exercises" element={<Exercises />} />
-            <Route path="/workout-plans" element={<WorkoutPlans />} />
-            <Route path="/diet" element={<Diet />} />
-            <Route path="/meal-planner" element={<MealPlanner />} />
-            <Route path="/settings" element={<Settings />} />
-          </Route>
-        </Routes>
-        <Chatbot />
-      </Router>
-    </NotificationProvider>
+            <Route element={<Layout />}>
+              <Route path="/dashboard" element={<Home />} />
+              <Route path="/dashboard/profile" element={<Profile />} />
+              <Route path="/exercises" element={<Exercises />} />
+              <Route path="/workout-plans" element={<WorkoutPlans />} />
+              <Route path="/diet" element={<Diet />} />
+              <Route path="/meal-planner" element={<MealPlanner />} />
+              <Route path="/settings" element={<Settings />} />
+            </Route>
+          </Routes>
+          <Chatbot />
+        </Router>
+      </NotificationProvider>
+    </ThemeProvider>
   );
 }
 

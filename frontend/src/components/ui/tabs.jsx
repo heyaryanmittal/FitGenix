@@ -22,7 +22,7 @@ const Tabs = ({ defaultValue, value, onValueChange, className, children }) => {
 const TabsList = ({ className, children }) => (
   <div
     className={cn(
-      "inline-flex h-12 items-center justify-center rounded-xl bg-zinc-950 p-1 text-zinc-400 border border-zinc-800/80 w-full",
+      "inline-flex h-12 items-center justify-center rounded-xl bg-slate-100 dark:bg-slate-900 p-1 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-800 w-full transition-colors",
       className
     )}
   >
@@ -42,7 +42,7 @@ const TabsTrigger = ({ value, className, children, ...props }) => {
         "inline-flex flex-1 items-center justify-center whitespace-nowrap rounded-lg px-3 py-2 text-sm font-semibold transition-all focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50",
         isActive
           ? "bg-orange-500 text-white shadow-md shadow-orange-500/20"
-          : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900/50",
+          : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-200/60 dark:hover:bg-slate-800/50",
         className
       )}
       {...props}

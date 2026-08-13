@@ -249,12 +249,12 @@ const Home = () => {
 
             {/* ── MOTIVATIONAL QUOTE CARD ── */}
             <div className="sunrise-card p-5 border-l-4 border-l-orange-500 flex items-start gap-4">
-                <div className="w-10 h-10 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 flex items-center justify-center shrink-0">
                     <Sun className="w-6 h-6" />
                 </div>
                 <div>
-                    <p className="text-sm text-slate-700 italic font-medium leading-relaxed font-display">"{quote}"</p>
-                    <p className="text-xs font-mono font-bold text-orange-600 mt-1">— {author}</p>
+                    <p className="text-sm text-slate-700 dark:text-slate-200 italic font-medium leading-relaxed font-display">"{quote}"</p>
+                    <p className="text-xs font-mono font-bold text-orange-600 dark:text-orange-400 mt-1">— {author}</p>
                 </div>
             </div>
 
@@ -265,18 +265,18 @@ const Home = () => {
                 <Card className="sunrise-card relative overflow-hidden">
                     <CardHeader className="pb-2">
                         <div className="flex justify-between items-center">
-                            <CardDescription className="text-slate-500 font-mono uppercase font-bold">Daily Calorie Goal</CardDescription>
+                            <CardDescription className="text-slate-500 dark:text-slate-400 font-mono uppercase font-bold">Daily Calorie Goal</CardDescription>
                         </div>
                     </CardHeader>
                     <CardContent className="flex flex-col items-center justify-center py-4 space-y-3">
                         <CircularProgress value={data?.totalConsumed || 0} max={data?.goals?.calories || 2000} size={130} strokeWidth={11}>
-                            <p className="text-2xl font-black text-slate-900 font-mono">{data?.totalConsumed || 0}</p>
-                            <p className="text-[10px] text-slate-500 font-mono">/ {data?.goals?.calories || 2000} kcal</p>
+                            <p className="text-2xl font-black text-slate-900 dark:text-white font-mono">{data?.totalConsumed || 0}</p>
+                            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-mono">/ {data?.goals?.calories || 2000} kcal</p>
                         </CircularProgress>
 
                         <button 
                             onClick={() => { setEditingGoal({ key: 'calories', label: 'Calories', value: data?.goals?.calories || 2000 }); setIsModalOpen(true); }}
-                            className="text-xs text-orange-600 hover:underline flex items-center gap-1 font-bold font-mono"
+                            className="text-xs text-orange-600 dark:text-orange-400 hover:underline flex items-center gap-1 font-bold font-mono"
                         >
                             <Edit3 className="w-3.5 h-3.5" /> Edit Calorie Goal
                         </button>
@@ -287,14 +287,14 @@ const Home = () => {
                 <Card className="sunrise-card">
                     <CardHeader className="pb-2">
                         <div className="flex justify-between items-center">
-                            <CardDescription className="text-slate-500 font-mono uppercase font-bold">Hydration Level</CardDescription>
-                            <div className="w-8 h-8 rounded-lg bg-cyan-50 text-cyan-600 flex items-center justify-center">
+                            <CardDescription className="text-slate-500 dark:text-slate-400 font-mono uppercase font-bold">Hydration Level</CardDescription>
+                            <div className="w-8 h-8 rounded-lg bg-cyan-50 dark:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 flex items-center justify-center">
                                 <Droplet className="w-4 h-4" />
                             </div>
                         </div>
-                        <CardTitle className="text-4xl font-black text-slate-900 font-mono mt-2">
+                        <CardTitle className="text-4xl font-black text-slate-900 dark:text-white font-mono mt-2">
                             {data?.waterIntake || 0}
-                            <span className="text-sm text-slate-500 font-normal"> / {data?.goals?.water || 3.0} L</span>
+                            <span className="text-sm text-slate-500 dark:text-slate-400 font-normal"> / {data?.goals?.water || 3.0} L</span>
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="pt-4 space-y-3">

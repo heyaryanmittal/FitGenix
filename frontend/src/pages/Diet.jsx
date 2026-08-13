@@ -75,7 +75,7 @@ const Diet = () => {
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
                             placeholder="Food Item (e.g. Oatmeal, Chicken Breast)"
-                            className="w-full pl-10 p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+                            className="w-full pl-10 p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
                         />
                     </div>
                     <div className="w-full md:w-32">
@@ -84,7 +84,7 @@ const Diet = () => {
                             value={servingSize}
                             onChange={(e) => setServingSize(e.target.value)}
                             placeholder="Qty (1 cup)"
-                            className="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+                            className="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500"
                         />
                     </div>
                     <button
@@ -139,7 +139,7 @@ const Diet = () => {
                                     </div>
 
                                     <div>
-                                        <p className="text-sm font-semibold text-gray-500 mb-2">Vitamins & Minerals</p>
+                                        <p className="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-2">Vitamins & Minerals</p>
                                         <div className="flex flex-wrap gap-2">
                                             {result.vitamins?.map((vit, idx) => (
                                                 <span key={idx} className="bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-3 py-1 rounded-full text-xs font-medium">
@@ -155,7 +155,7 @@ const Diet = () => {
                                 <h4 className="text-lg font-bold text-gray-800 dark:text-white mb-4">Add to Daily Log</h4>
 
                                 <div className="space-y-4">
-                                    <label className="block text-sm font-medium text-gray-500">Select Meal</label>
+                                    <label className="block text-sm font-medium text-gray-500 dark:text-gray-400">Select Meal</label>
                                     <div className="grid grid-cols-2 gap-2">
                                         {['Breakfast', 'Lunch', 'Snacks', 'Dinner'].map((meal) => (
                                             <button

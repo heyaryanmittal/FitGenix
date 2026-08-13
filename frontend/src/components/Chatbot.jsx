@@ -42,7 +42,7 @@ const FormattedMessage = ({ text }) => {
                     return parts.map((part, pIdx) => {
                         if (part.startsWith('**') && part.endsWith('**')) {
                             return (
-                                <strong key={pIdx} className="font-semibold text-slate-900">
+                                <strong key={pIdx} className="font-semibold text-slate-900 dark:text-white">
                                     {part.slice(2, -2)}
                                 </strong>
                             );
@@ -55,7 +55,7 @@ const FormattedMessage = ({ text }) => {
                     return (
                         <div key={lineIdx} className="flex items-start gap-2 my-1 pl-1">
                             <span className="w-1.5 h-1.5 rounded-full bg-orange-500 mt-1.5 shrink-0" />
-                            <span className="text-slate-700 leading-relaxed">{renderInline(cleanContent)}</span>
+                            <span className="text-slate-700 dark:text-slate-200 leading-relaxed">{renderInline(cleanContent)}</span>
                         </div>
                     );
                 }
@@ -65,16 +65,16 @@ const FormattedMessage = ({ text }) => {
                     const num = matchNum ? matchNum[1] : lineIdx + 1;
                     return (
                         <div key={lineIdx} className="flex items-start gap-2 my-1 pl-1">
-                            <span className="text-[10px] font-bold text-orange-500 bg-orange-100 rounded-full w-4 h-4 flex items-center justify-center shrink-0 mt-0.5 font-mono">
+                            <span className="text-[10px] font-bold text-orange-500 bg-orange-100 dark:bg-orange-950/60 dark:text-orange-400 rounded-full w-4 h-4 flex items-center justify-center shrink-0 mt-0.5 font-mono">
                                 {num}
                             </span>
-                            <span className="text-slate-700 leading-relaxed">{renderInline(cleanContent)}</span>
+                            <span className="text-slate-700 dark:text-slate-200 leading-relaxed">{renderInline(cleanContent)}</span>
                         </div>
                     );
                 }
 
                 return (
-                    <p key={lineIdx} className="text-slate-700 leading-relaxed">
+                    <p key={lineIdx} className="text-slate-700 dark:text-slate-200 leading-relaxed">
                         {renderInline(trimmed)}
                     </p>
                 );
@@ -209,7 +209,7 @@ const Chatbot = () => {
                         </div>
 
                         {/* Messages Container */}
-                        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50">
+                        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50 dark:bg-slate-900 transition-colors">
                             {messages.map((msg, index) => (
                                 <div
                                     key={index}
@@ -219,7 +219,7 @@ const Chatbot = () => {
                                         className={`max-w-[88%] p-3.5 rounded-2xl text-xs ${
                                             msg.role === 'user'
                                                 ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-br-xs shadow-md shadow-orange-500/15 font-medium'
-                                                : 'bg-white text-slate-800 border border-slate-200/80 rounded-bl-xs shadow-sm'
+                                                : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 border border-slate-200/80 dark:border-slate-700/80 rounded-bl-xs shadow-sm'
                                         }`}
                                     >
                                         {msg.role === 'user' ? (
@@ -234,7 +234,7 @@ const Chatbot = () => {
                             {/* Thinking State */}
                             {loading && (
                                 <div className="flex justify-start">
-                                    <div className="bg-white p-3 rounded-2xl rounded-bl-xs border border-slate-200 shadow-sm flex items-center gap-2 text-xs text-slate-600 font-mono">
+                                    <div className="bg-white dark:bg-slate-800 p-3 rounded-2xl rounded-bl-xs border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300 font-mono">
                                         <Sparkles className="w-4 h-4 text-orange-500 animate-spin" />
                                         <span>Analyzing fitness query...</span>
                                     </div>
