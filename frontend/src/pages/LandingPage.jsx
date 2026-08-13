@@ -227,11 +227,11 @@ const LandingPage = () => {
                     </div>
 
                     {/* Nav Links */}
-                    <nav className="hidden md:flex items-center gap-8 text-xs font-mono tracking-wider font-bold text-slate-600 dark:text-slate-300 uppercase">
-                        <a href="#features" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Features</a>
-                        <a href="#ai-coach" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">AI Coach</a>
-                        <a href="#pricing" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Pricing</a>
-                        <a href="#reviews" className="hover:text-orange-600 dark:hover:text-orange-400 transition-colors">Reviews</a>
+                    <nav className="hidden md:flex items-center gap-2 lg:gap-4 text-sm font-bold tracking-wide text-slate-900 dark:text-white">
+                        <a href="#features" className="px-3.5 py-1.5 rounded-xl hover:bg-orange-500/10 dark:hover:bg-orange-500/20 text-slate-800 dark:text-slate-100 hover:text-orange-600 dark:hover:text-orange-400 font-black transition-all hover:scale-105">Features</a>
+                        <a href="#ai-coach" className="px-3.5 py-1.5 rounded-xl hover:bg-orange-500/10 dark:hover:bg-orange-500/20 text-slate-800 dark:text-slate-100 hover:text-orange-600 dark:hover:text-orange-400 font-black transition-all hover:scale-105">AI Coach</a>
+                        <a href="#pricing" className="px-3.5 py-1.5 rounded-xl hover:bg-orange-500/10 dark:hover:bg-orange-500/20 text-slate-800 dark:text-slate-100 hover:text-orange-600 dark:hover:text-orange-400 font-black transition-all hover:scale-105">Pricing</a>
+                        <a href="#reviews" className="px-3.5 py-1.5 rounded-xl hover:bg-orange-500/10 dark:hover:bg-orange-500/20 text-slate-800 dark:text-slate-100 hover:text-orange-600 dark:hover:text-orange-400 font-black transition-all hover:scale-105">Reviews</a>
                     </nav>
 
                     {/* Action Buttons */}
@@ -276,14 +276,16 @@ const LandingPage = () => {
                         transition={{ duration: 0.6 }}
                         className="lg:col-span-7 space-y-8"
                     >
-                        <h1 className="text-5xl sm:text-6xl xl:text-7xl font-black text-slate-900 tracking-tight font-display uppercase leading-[1.05]">
-                            RISE & CONQUER <br />
+                        <h1 className="text-5xl sm:text-6xl xl:text-7xl font-black tracking-tight font-display uppercase leading-[1.05]">
                             <span className="bg-clip-text text-transparent bg-gradient-to-r from-orange-600 via-amber-500 to-orange-500">
+                                RISE & CONQUER
+                            </span> <br />
+                            <span className="text-slate-900 dark:text-white dark:drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]">
                                 YOUR FITNESS GOALS.
                             </span>
                         </h1>
 
-                        <p className="text-base sm:text-lg text-slate-600 font-medium leading-relaxed max-w-2xl">
+                        <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300 font-medium leading-relaxed max-w-2xl">
                             Transform your health with hyper-personalized nutrition plans, adaptive workout split generators, and 24/7 AI coaching in an optimistic, high-energy environment.
                         </p>
 
@@ -309,14 +311,14 @@ const LandingPage = () => {
                         </div>
 
                         {/* Telemetry Stats */}
-                        <div className="pt-6 border-t border-slate-200 grid grid-cols-2 sm:grid-cols-4 gap-4">
+                        <div className="pt-6 border-t border-slate-200 dark:border-slate-800 grid grid-cols-2 sm:grid-cols-4 gap-4">
                             {stats.map((stat, i) => (
                                 <div key={i} className="flex flex-col">
-                                    <div className="flex items-center gap-1.5 text-xs text-slate-500 font-mono mb-1">
+                                    <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 font-mono mb-1">
                                         {stat.icon}
                                         <span>{stat.label}</span>
                                     </div>
-                                    <span className="text-2xl font-black text-slate-900 font-mono">{stat.value}</span>
+                                    <span className="text-2xl font-black text-slate-900 dark:text-white font-mono">{stat.value}</span>
                                 </div>
                             ))}
                         </div>
