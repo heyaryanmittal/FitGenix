@@ -61,50 +61,50 @@ const LandingPage = () => {
         {
             title: "Personalized Workout Splits",
             description: "Custom training routines tailored to your fitness level, target muscle groups, equipment availability, and weekly schedule.",
-            icon: <Dumbbell className="w-6 h-6 text-white" />,
-            badge: "Smart Workouts",
-            gradient: "from-orange-500 via-amber-500 to-orange-600",
-            badgeStyle: "bg-orange-50 text-orange-700 border-orange-200/80"
+            icon: <Dumbbell className="w-5 h-5 text-white" />,
+            category: "Smart Workouts",
+            categoryColor: "text-orange-600",
+            gradient: "from-orange-500 via-amber-500 to-orange-600"
         },
         {
             title: "Precision Food & Macro Tracker",
             description: "Instant calorie and macronutrient breakdowns for thousands of regional and global foods with flexible serving size calculation.",
-            icon: <Utensils className="w-6 h-6 text-white" />,
-            badge: "Nutrition Insights",
-            gradient: "from-emerald-500 via-teal-500 to-emerald-600",
-            badgeStyle: "bg-emerald-50 text-emerald-700 border-emerald-200/80"
+            icon: <Utensils className="w-5 h-5 text-white" />,
+            category: "Nutrition Insights",
+            categoryColor: "text-emerald-600",
+            gradient: "from-emerald-500 via-teal-500 to-emerald-600"
         },
         {
             title: "7-Day Intelligent Meal Planner",
             description: "Structured weekly meal schedules with one-touch recipe alternatives designed around your target daily calories.",
-            icon: <Calendar className="w-6 h-6 text-white" />,
-            badge: "Weekly Planning",
-            gradient: "from-purple-500 via-violet-500 to-indigo-600",
-            badgeStyle: "bg-purple-50 text-purple-700 border-purple-200/80"
+            icon: <Calendar className="w-5 h-5 text-white" />,
+            category: "Weekly Planning",
+            categoryColor: "text-purple-600",
+            gradient: "from-purple-500 via-violet-500 to-indigo-600"
         },
         {
             title: "24/7 Virtual Fitness Assistant",
             description: "Get immediate answers and personalized guidance on exercise form, workout recovery, nutrition, and training strategy.",
-            icon: <Brain className="w-6 h-6 text-white" />,
-            badge: "24/7 Guidance",
-            gradient: "from-blue-500 via-cyan-500 to-blue-600",
-            badgeStyle: "bg-blue-50 text-blue-700 border-blue-200/80"
+            icon: <Brain className="w-5 h-5 text-white" />,
+            category: "24/7 Guidance",
+            categoryColor: "text-blue-600",
+            gradient: "from-blue-500 via-cyan-500 to-blue-600"
         },
         {
             title: "Intelligent Health & Limit Alerts",
             description: "Automatic notifications whenever your calorie or macronutrient intake strays outside your recommended safe range.",
-            icon: <ShieldAlert className="w-6 h-6 text-white" />,
-            badge: "Calorie Safety",
-            gradient: "from-rose-500 via-red-500 to-pink-600",
-            badgeStyle: "bg-rose-50 text-rose-700 border-rose-200/80"
+            icon: <ShieldAlert className="w-5 h-5 text-white" />,
+            category: "Calorie Safety",
+            categoryColor: "text-rose-600",
+            gradient: "from-rose-500 via-red-500 to-pink-600"
         },
         {
             title: "Interactive Exercise Library",
             description: "Detailed exercise execution instructions with muscle activation maps, technique tips, and progress logging.",
-            icon: <Layers className="w-6 h-6 text-white" />,
-            badge: "Exercise Technique",
-            gradient: "from-amber-500 via-orange-500 to-amber-600",
-            badgeStyle: "bg-amber-50 text-amber-700 border-amber-200/80"
+            icon: <Layers className="w-5 h-5 text-white" />,
+            category: "Exercise Technique",
+            categoryColor: "text-amber-600",
+            gradient: "from-amber-500 via-orange-500 to-amber-600"
         }
     ];
 
@@ -383,9 +383,6 @@ const LandingPage = () => {
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-orange-500/5 rounded-full blur-[140px] pointer-events-none -z-10" />
 
                 <div className="text-center max-w-3xl mx-auto space-y-4 mb-16">
-                    <span className="px-4 py-1.5 rounded-full text-xs font-mono font-bold bg-orange-100 text-orange-700 border border-orange-200 uppercase tracking-wider inline-block">
-                        CORE CAPABILITIES
-                    </span>
                     <h2 className="text-3xl sm:text-5xl font-black text-slate-900 font-display uppercase tracking-tight">
                         ENGINEERED FOR <span className="text-orange-600">PEAK PERFORMANCE</span>
                     </h2>
@@ -398,30 +395,27 @@ const LandingPage = () => {
                     {features.map((feat, idx) => (
                         <div 
                             key={idx} 
-                            className="bg-white rounded-3xl p-7 border border-slate-200/80 hover:border-orange-300 shadow-sm hover:shadow-xl hover:shadow-orange-500/10 transition-all duration-300 group flex flex-col justify-between hover:-translate-y-1.5"
+                            className="bg-white rounded-3xl p-7 border border-slate-200/80 hover:border-orange-300 shadow-sm hover:shadow-xl hover:shadow-orange-500/10 transition-all duration-300 group flex flex-col space-y-4 hover:-translate-y-1.5"
                         >
-                            <div className="space-y-5">
-                                <div className="flex items-center justify-between">
-                                    <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${feat.gradient} flex items-center justify-center shadow-md group-hover:scale-110 group-hover:shadow-lg transition-all duration-300`}>
-                                        {feat.icon}
-                                    </div>
-                                    <span className={`px-3.5 py-1 rounded-full text-xs font-mono font-bold border ${feat.badgeStyle}`}>
-                                        {feat.badge}
-                                    </span>
+                            {/* Logo + Category Header naturally alongside each other */}
+                            <div className="flex items-center gap-3.5">
+                                <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${feat.gradient} flex items-center justify-center shadow-md group-hover:scale-105 transition-transform shrink-0`}>
+                                    {feat.icon}
                                 </div>
-                                <div className="space-y-2">
-                                    <h3 className="text-xl font-extrabold text-slate-900 group-hover:text-orange-600 transition-colors font-display">
-                                        {feat.title}
-                                    </h3>
-                                    <p className="text-sm text-slate-600 font-medium leading-relaxed">
-                                        {feat.description}
-                                    </p>
-                                </div>
+                                <span className={`text-xs font-mono font-bold uppercase tracking-wider ${feat.categoryColor}`}>
+                                    {feat.category}
+                                </span>
                             </div>
-                            <div className="pt-6 mt-6 border-t border-slate-100 flex items-center justify-between text-xs font-mono font-bold text-slate-400 group-hover:text-orange-600 transition-colors">
-                                <span>Explore Feature</span>
-                                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                            </div>
+
+                            {/* Title beneath header & logo */}
+                            <h3 className="text-xl font-extrabold text-slate-900 group-hover:text-orange-600 transition-colors font-display">
+                                {feat.title}
+                            </h3>
+
+                            {/* Description */}
+                            <p className="text-sm text-slate-600 font-medium leading-relaxed">
+                                {feat.description}
+                            </p>
                         </div>
                     ))}
                 </div>
