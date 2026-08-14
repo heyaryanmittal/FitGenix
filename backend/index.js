@@ -237,6 +237,122 @@ app.get('/api/dashboard', authenticateToken, async (req, res) => {
     }
 });
 
+// Water Intake Log Endpoint
+app.post('/api/user/log/water', authenticateToken, async (req, res) => {
+    try {
+        const { date, amount, mode } = req.body; // mode: 'add' or 'set'
+        const targetDate = date || new Date().toISOString().split('T')[0];
+        const user = await User.findById(req.user.id);
+
+        let todayLog = user.dailyLogs.find(log => log.date === targetDate);
+        if (!todayLog) {
+            todayLog = { date: targetDate, exercises: [], nutrition: { breakfast: [], lunch: [], dinner: [], snacks: [] }, water: 0 };
+            user.dailyLogs.push(todayLog);
+            todayLog = user.dailyLogs[user.dailyLogs.length - 1];
+        }
+
+        if (mode === 'add') {
+            todayLog.water = Math.round(((todayLog.water || 0) + (Number(amount) || 0)) * 100) / 100;
+        } else {
+            todayLog.water = Number(amount) || 0;
+        }
+
+        user.markModified('dailyLogs');
+        await user.save();
+
+        res.json({ success: true, water: todayLog.water });
+    } catch (err) {
+        console.error("Water Log Error:", err);
+        res.status(500).json({ error: "Failed to log water intake" });
+    }
+});
+
+// Dashboard AI Insights Endpoint
+app.post('/api/dashboard/ai-insight', authenticateToken, async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id);
+        const { totalConsumed, waterIntake, macros, date } = req.body;
+        
+        const userGoal = user?.details?.goal || "General Fitness";
+        const calorieGoal = user?.goals?.calories || 2000;
+        const waterGoal = user?.goals?.water || 3.0;
+
+        const systemPrompt = `You are FitGenix AI Lead Performance Coach.
+Generate concise, personalized daily insights for the athlete.
+Return ONLY valid JSON with this exact structure:
+{
+  "summary": "1-2 sentence overall daily performance summary",
+  "nutritionAdvice": "1 concise sentence on calories/macros",
+  "hydrationAdvice": "1 concise sentence on water intake",
+  "actionableTip": "1 practical action item for today",
+  "readinessScore": 92
+}`;
+
+        const userPrompt = `Athlete Goal: ${userGoal}
+Date: ${date || 'Today'}
+Calories Consumed: ${totalConsumed || 0} / ${calorieGoal} kcal
+Water Intake: ${waterIntake || 0} / ${waterGoal} Liters
+Macros Logged: Protein ${macros?.protein || 0}g, Carbs ${macros?.carbs || 0}g, Fats ${macros?.fats || 0}g
+User Age: ${user?.details?.age || 25}, Weight: ${user?.details?.weight || 70}kg, Height: ${user?.details?.height || 175}cm`;
+
+        try {
+            const completion = await getGroqCompletion([
+                { role: "system", content: systemPrompt },
+                { role: "user", content: userPrompt }
+            ]);
+
+            const content = (completion.choices[0]?.message?.content || '').trim();
+            const jsonMatch = content.match(/\{[\s\S]*\}/);
+            if (jsonMatch) {
+                const insightData = JSON.parse(jsonMatch[0]);
+                return res.json({ success: true, insight: insightData });
+            }
+        } catch (aiErr) {
+            console.warn("AI Insight Groq Error, fallback triggered:", aiErr.message);
+        }
+
+        // High quality fallback insight
+        const isWaterLow = (waterIntake || 0) < waterGoal / 2;
+        const isCalorieHigh = (totalConsumed || 0) > calorieGoal;
+
+        res.json({
+            success: true,
+            insight: {
+                summary: `You are making steady progress toward your ${userGoal} target today!`,
+                nutritionAdvice: isCalorieHigh ? "You are slightly above your calorie target; prioritize fiber and lean protein." : "Your calorie distribution is well within target range.",
+                hydrationAdvice: isWaterLow ? `Hydration is below optimal. Try drinking +500ml of water right now.` : "Great job maintaining optimal hydration levels!",
+                actionableTip: "Complete 10 minutes of active stretching or mobility work before bed for optimal muscle recovery.",
+                readinessScore: isWaterLow ? 84 : 95
+            }
+        });
+
+    } catch (err) {
+        console.error("AI Insight Error:", err);
+        res.status(500).json({ error: "Failed to generate AI insight" });
+    }
+});
+
+// Change Password Endpoint
+app.post('/api/user/change-password', authenticateToken, async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+        const user = await User.findById(req.user.id);
+        if (!user) return res.status(404).json({ error: "User not found" });
+
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+        if (!isMatch) return res.status(400).json({ error: "Current password is incorrect" });
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        user.password = hashedPassword;
+        await user.save();
+
+        res.json({ success: true, message: "Password updated successfully" });
+    } catch (err) {
+        console.error("Change Password Error:", err);
+        res.status(500).json({ error: "Failed to update password" });
+    }
+});
+
 // Log Exercise
 app.post('/api/user/log/exercise', authenticateToken, async (req, res) => {
     try {

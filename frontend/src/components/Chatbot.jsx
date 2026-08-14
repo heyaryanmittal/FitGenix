@@ -7,10 +7,12 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 
 const SUGGESTIONS = [
+    { label: "⚡ Today's Analysis", query: "Can you analyze my daily fitness, calorie, and water progress?" },
     { label: "💪 4-Day Workout Split", query: "Can you give me a simple 4-day workout split for muscle building?" },
     { label: "🥗 High Protein Foods", query: "What are the top 5 high-protein foods for muscle recovery?" },
     { label: "🔥 Calorie Deficit Tips", query: "How do I safely maintain a calorie deficit to lose fat?" },
     { label: "💧 Daily Water Goal", query: "How much water should I drink daily for optimal fitness?" },
+    { label: "🧘 Post-Workout Stretch", query: "Give me a quick 5-minute post-workout cooldown routine." }
 ];
 
 // Custom Formatted Text Component for Bullet Points & Bold Styling

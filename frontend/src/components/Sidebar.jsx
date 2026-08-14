@@ -7,8 +7,10 @@ import {
   Utensils, 
   Calendar, 
   Settings, 
+  User,
   X, 
-  Flame
+  Flame,
+  Sparkles
 } from 'lucide-react';
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
@@ -21,6 +23,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         { name: "Workout Plans", path: "/workout-plans", icon: <ClipboardList className="w-4 h-4" /> },
         { name: "Diet & Nutrition", path: "/diet", icon: <Utensils className="w-4 h-4" /> },
         { name: "7-Day Meal Planner", path: "/meal-planner", icon: <Calendar className="w-4 h-4" /> },
+        { name: "My Athlete Profile", path: "/dashboard/profile", icon: <User className="w-4 h-4" /> },
         { name: "Settings", path: "/settings", icon: <Settings className="w-4 h-4" /> },
     ];
 
@@ -35,12 +38,12 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         <aside className={`fixed inset-y-0 left-0 w-64 bg-white dark:bg-[#0F172A] border-r border-slate-200 dark:border-slate-800/80 shadow-xl z-40 transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 md:translate-x-0 md:static p-5 flex flex-col h-full overflow-hidden`}>
             
             {/* Header */}
-            <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-100 dark:border-slate-800">
+            <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
                 <div 
                     onClick={() => handleNavigation('/dashboard')} 
                     className="flex items-center gap-2.5 cursor-pointer select-none"
                 >
-                    <div className="w-8 h-8 rounded-xl bg-orange-500 flex items-center justify-center text-white shadow-sunrise-orange">
+                    <div className="w-8 h-8 rounded-xl bg-orange-500 flex items-center justify-center text-white shadow-md shadow-orange-500/20">
                         <Flame className="w-5 h-5 fill-white" />
                     </div>
                     <span className="text-xl font-black tracking-tight text-slate-900 dark:text-white font-display">
@@ -63,9 +66,9 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
                         <button
                             key={item.path}
                             onClick={() => handleNavigation(item.path)}
-                            className={`w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-xs font-semibold transition-all ${
+                            className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                                 isActive
-                                    ? 'bg-orange-500 text-white shadow-sunrise-orange font-bold'
+                                    ? 'bg-orange-500 text-white shadow-md shadow-orange-500/25 font-bold'
                                     : 'text-slate-600 dark:text-slate-300 hover:bg-orange-50 dark:hover:bg-orange-500/10 hover:text-orange-600 dark:hover:text-orange-400'
                             }`}
                         >
@@ -80,9 +83,14 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 
             {/* Footer */}
             <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
-                <div className="bg-orange-50 dark:bg-orange-500/10 rounded-xl p-3 border border-orange-100 dark:border-orange-500/20 text-center">
-                    <p className="text-[11px] font-semibold text-orange-700 dark:text-orange-400">FitGenix Engine</p>
-                    <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5">&copy; 2026 FitGenix AI</p>
+                <div className="bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-500/10 dark:to-amber-500/10 rounded-xl p-3 border border-orange-100 dark:border-orange-500/20 flex items-center gap-2.5">
+                    <div className="w-7 h-7 rounded-lg bg-orange-500 text-white flex items-center justify-center shrink-0">
+                        <Sparkles className="w-3.5 h-3.5" />
+                    </div>
+                    <div>
+                        <p className="text-[11px] font-bold text-orange-700 dark:text-orange-400">FitGenix AI v2.5</p>
+                        <p className="text-[10px] text-slate-400 dark:text-slate-500">Groq Engine Active</p>
+                    </div>
                 </div>
             </div>
         </aside>
@@ -90,3 +98,4 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 };
 
 export default Sidebar;
+
